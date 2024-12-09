@@ -11,7 +11,8 @@ class ModelUser {
         $tables = [
             'khachhang' => 'MaKhachHang',
             'nhanvien' => 'MaNhanVien',
-            'chusan' => 'MaChuSan'
+            'chusan' => 'MaChuSan',
+            'quantrihethong' => 'MaQuanTri'
         ];
 
         foreach ($tables as $table => $idColumn) {

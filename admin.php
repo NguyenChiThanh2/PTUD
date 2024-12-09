@@ -122,15 +122,23 @@ article p {
         <nav>
             <ul>
             <?php
-                echo "<li><a href='?sanbong'>Quản Lý Sân Bóng</a></li>";
+               
                 if($loaiNguoiDung == "chusan"){
+                    echo "<li><a href='?sanbong'>Quản Lý Sân Bóng</a></li>";
                     echo "<li><a href='?nhanvien'>Quản Lý Nhân Viên</a></li>";
                     echo "<li><a href='?khachhang'>Quản Lý khách Hàng</a></li>";
                     echo "<li><a href='?coso'>Quản Lý Cơ Sở</a></li>";
+                    echo "<li><a href='?dondat'>Quản Lý Đơn Đặt Sân</a></li>";
+
+                }elseif($loaiNguoiDung == "quantrihethong"){
+                    echo "<li><a href='?khachhang'>Quản Lý khách Hàng</a></li>";
+                    echo "<li><a href='?chusan'>Quản Lý Chủ Sân</a></li>";
                 }else{
+                    echo "<li><a href='?sanbong'>Quản Lý Sân Bóng</a></li>";
                     echo "<li><a href='?khachhang'>Quản Lý Khách Hàng</a></li>";
+                    echo "<li><a href='?dondat'>Quản Lý Đơn Đặt Sân</a></li>";
+
                 }
-                echo "<li><a href='?dondat'>Quản Lý Đơn Đặt Sân</a></li>";
             ?>
             </ul>
         </nav>
@@ -172,7 +180,7 @@ article p {
             }elseif (isset($_REQUEST["action"]) && $_REQUEST["action"] == "editDon"){
                 include_once("View/editdon.php");          
             }else {
-            echo "<h2>Chào Mừng Đến Với Trang Admin</h2>";
+            echo "<h2>Chào Mừng Đến Với Trang Quản Lý</h2>";
             }
             ?>
         </article>  

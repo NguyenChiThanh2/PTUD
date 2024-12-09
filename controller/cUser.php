@@ -27,6 +27,10 @@ class ControllerUser {
                     $welcomeMessage = "Chào mừng Quý Khách. Hãy tận hưởng những dịch vụ tốt nhất từ chúng tôi.";
                     $_SESSION["MaKhachHang"] = $user["MaKhachHang"];
                     break;
+                case 'quantrihethong':
+                    $welcomeMessage = "Chào mừng quản trị viên.";
+                    $_SESSION["MaQuanTri"] = $user["MaQuanTri"];
+                    break;
                 default:
                     $welcomeMessage = "Welcome Admin!";
             }

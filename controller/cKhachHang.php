@@ -21,6 +21,16 @@ include_once("model/mKhachHang.php");
             }
         }
 
+        public function GetAllKhachHang(){
+            $p = new ModelKhachHang();
+            $kq =$p->selectAllKhachHang();
+            if(mysqli_num_rows($kq)>0){
+                return $kq;
+            }else{  
+                return false;
+            }
+        }
+
 
         // public function updateKhachHang($maKH, $TenKH, $email, $sdt, $matKhau, $diaChi, $gioitinh) {
         //     // Kiểm tra mã nhân viên và mã chủ sân có tồn tại
