@@ -24,7 +24,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $cDatSan = new cDatSan(); 
     $maSanBong = $_POST['maSanBong'];
     $maKhachHang = $_SESSION['dangnhap'];
-    $ngayDat = $_POST['ngayDat'];
+    $ngayDat = $_POST['ngayNhanSan'];
     $gioBatDau = $_POST['gioBatDau'];
     $gioKetThuc = $_POST['gioKetThuc'];
     $tongTien = str_replace(['.',',', ' VNĐ'], '', $_POST['tongTien']);
@@ -63,15 +63,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <input type="hidden" name="maSanBong" id="maSanBong" value="<?php echo $thongTinSan['MaSanBong']; ?>">
                     </div>  
                     <div class="mb-3">
-                        <label for="ngayDat">Ngày đặt:</label>
-                        <input type="date" id="ngayDat" name="ngayDat" required>
+                        <label for="ngayDat">Ngày nhận sân:</label>
+                        <input type="date" id="ngayNhanSan" name="ngayNhanSan" required>
                     </div>       
                     <div class="mb-3">
-                        <label for="gioBatDau">Giờ bắt đầu:</label>
+                        <label for="gioBatDau">Thời gian bắt đầu:</label>
                         <input type="time" id="gioBatDau" name="gioBatDau" required>
                     </div>  
                     <div class="mb-3">
-                        <label for="gioKetThuc">Giờ kết thúc:</label>
+                        <label for="gioKetThuc">Thời gian kết thúc:</label>
                         <input type="time" id="gioKetThuc" name="gioKetThuc" required>
                     </div>  
                     <div class="mb-3">
@@ -136,10 +136,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     document.getElementById("datSanForm").addEventListener("submit", function (e) {
         const startTime = document.getElementById("gioBatDau").value;
         const endTime = document.getElementById("gioKetThuc").value;
-        const ngayDat = document.getElementById("ngayDat").value;
+        const ngayDat = document.getElementById("ngayNhanSan").value;
         const today = new Date().toISOString().split('T')[0];
 
-        if (ngayDat < today) {
+        if (ngayNhanSan < today) {
             e.preventDefault();
             alert("Không thể đặt sân vào ngày đã qua.");
             return;

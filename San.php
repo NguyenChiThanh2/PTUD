@@ -41,7 +41,7 @@ ob_start();
                  }
             ?>
             <?php
-                if(isset($_SESSION["dangnhap"])){
+                if(isset($_SESSION["dangnhap"]) && isset($_SESSION['loaiNguoiDung']) && $_SESSION['loaiNguoiDung'] == 'khachhang'){
                     echo '<button class="btn-login"><a style="color: white;" href="?lichsudatsan">Danh sách đơn đặt sân</a></button>';
                 }
             ?>

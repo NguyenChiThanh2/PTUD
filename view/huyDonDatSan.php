@@ -5,7 +5,6 @@ if(isset($_GET['id'])) {
     $maDonDatSan = intval($_GET['id']);
     $p = new cDonDatSan();
     $result = $p->huyDonDatSan($maDonDatSan);
-    echo $result;    
     if($result) {
         echo "<script>alert('Đã hủy đơn đặt sân thành công!'); window.location.href='San.php?lichsudatsan';</script>";
     } else {
@@ -15,4 +14,3 @@ if(isset($_GET['id'])) {
     echo "<script>alert('Không tìm thấy mã đơn đặt sân!'); window.history.back();</script>";
 }
 ?>
-

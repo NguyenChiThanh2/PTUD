@@ -13,15 +13,13 @@ if($kq && mysqli_num_rows($kq) > 0){
             <h1>Lịch sử đặt sân</h1>
         </div>";
     echo "<table>";
-    echo "<tr><th>Mã đơn</th><th>Tên khách hàng</th><th>Tên sân</th><th>Ngày đặt</th><th>Thời gian bắt đầu</th><th>Thời gian kết thúc</th><th>Tổng tiền</th><th>Trạng thái</th><th>Hành động</th></tr>";
+    echo "<tr><th>Mã đơn</th><th>Tên khách hàng</th><th>Tên sân</th><th>Ngày đặt</th><th>Tổng tiền</th><th>Trạng thái</th><th>Hành động</th></tr>";
     while($r = mysqli_fetch_assoc($kq)){
         echo "<tr>";
         echo "<td>".$r["MaDonDatSan"]."</td>";
         echo "<td>".$r["TenKhachHang"]."</td>";
         echo "<td>".$r["TenSanBong"]."</td>";
         echo "<td>".$r["NgayDat"]."</td>";
-        echo "<td>".$r["GioBatDau"]."</td>";
-        echo "<td>".$r["GioKetThuc"]."</td>";
         echo "<td>".number_format($r["TongTien"], 0, ',', '.')." VNĐ</td>";
         echo "<td>".$r["TrangThai"]."</td>";
         echo "<td><a href='?viewDetail&id=".$r["MaDonDatSan"]."'>Chi tiết</a>";
