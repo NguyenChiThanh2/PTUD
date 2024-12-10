@@ -226,6 +226,7 @@ $bangGia = [
 
         // Kiểm tra số điện thoại có tồn tại không
         $tblktds = $p->getKiemTraSDT($_POST['txtSDT']);
+        
         if ($tblktds) {
             $ngayDat = $_POST['txtNgayDat'];
             $gioBatDau = $_POST['txtGioBatDau'];
@@ -298,15 +299,13 @@ $bangGia = [
                 $_SESSION['txtGioKetThuc'] = $gioKetThuc;
                 $_SESSION['total'] = $tongTien;
             }
-        } else {
-            echo "<p style='color: red; text-align: center;'>Số điện thoại chưa được đăng ký tài khoản!</p>";
-        }
+        } 
     }
 
     // Xử lý xác nhận đặt sân
     if (isset($_POST['subds'])) {
         $p = new cDonDatSan();
-        $result = $p->getinsertDatSan($_SESSION["MaKH"], $_SESSION["TenKH"], $masan, $_SESSION['txtNgayDat'], $_SESSION['txtGioBatDau'], $_SESSION['txtGioKetThuc'], $_SESSION["total"]);
+        $result = $p->getinsertDatSan($masan, $_SESSION['MaKH'], $_SESSION['txtNgayDat'], $_SESSION['txtGioBatDau'] , $_SESSION['txtGioKetThuc'] , $_SESSION['total'],$_SESSION['TenKH']);
         if ($result) {
             echo "<script>alert('Đặt sân thành công!');</script>";
             header("refresh: 0; url='../admin.php?dondat'");

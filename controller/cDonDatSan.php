@@ -21,15 +21,20 @@ class cDonDatSan {
         return $model->PheDuyetDon($maDonDatSan);
     }
 
-    public function getinsertDatSan($mkh,$tkh,$ms,$nd, $gbd,$gkt,$tt) {
+    public function getinsertDatSan($maSanBong, $maKhachHang, $ngayNhanSan, $gioBatDau, $gioKetThuc, $tongTien,$tenKH){
         $model = new mDonDatSan();
-        $kq = $model->insertDatSan($mkh,$tkh,$ms,$nd, $gbd,$gkt,$tt);
+        
+        $kq = $model->insertDatSan($maSanBong, $maKhachHang, $ngayNhanSan, $gioBatDau, $gioKetThuc, $tongTien,$tenKH);
+      
         if($kq){
             return $kq;
         }else{
+           
+
             return false;
         }
     }
+    
     public function getKiemTraSDT($sdt){
         $model = new mDonDatSan();
         $kq = $model->KiemTraSDT($sdt);

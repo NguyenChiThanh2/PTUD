@@ -130,21 +130,54 @@ class mDonDatSan {
         return $result; // Trả về kết quả thực thi câu lệnh
     }
 
-    public function insertDatSan($mkh,$tkh,$ms,$nd, $gbd,$gkt,$tt) {
+    public function insertDatSan($maSanBong, $maKhachHang, $ngayNhanSan, $gioBatDau, $gioKetThuc, $tongTien,$tenKhachHang) {
         $p = new mKetNoi();
         $con = $p->moKetNoi();
-        $trangthai = "Chờ duyệt";
-        // Cập nhật trạng thái đơn đặt sân thành "Đã phê duyệt"
-        $sql = "INSERT INTO dondatsan1(MaKhachHang, TenKhachHang, MaSanBong, NgayDat, GioBatDau, GioKetThuc, TongTien, TrangThai) 
-                VALUES ('$mkh','$tkh','$ms','$nd','$gbd','$gkt','$tt','$trangthai')";
-        $kq = $con->query($sql);
-        $p->dongKetNoi($con);
-        if($kq){
-            return $kq;
-        }else{
+        error_log("Debug: maSanBong=$maSanBong, maKhachHang=$maKhachHang, ngayNhanSan=$ngayNhanSan, gioBatDau=$gioBatDau, gioKetThuc=$gioKetThuc, tongTien=$tongTien");
+
+        if (empty($gioBatDau) || empty($gioKetThuc) || empty($tongTien)) {
+            error_log("Error: Missing required fields");
             return false;
         }
+       
+
+       
+
+       
+
+        $ngayDat = date("Y-m-d"); // Current date
+        $trangThai = 'Chờ duyệt';
+        $sqlDatSan = "INSERT INTO dondatsan1 (MaKhachHang, TenKhachHang, MaSanBong, NgayDat, TongTien, TrangThai) 
+                  VALUES (?, ?, ?, ?, ?, ?)";
+        $stmt = $con->prepare($sqlDatSan);
+        $stmt->bind_param("isisds", $maKhachHang, $tenKhachHang, $maSanBong, $ngayDat, $tongTien, $trangThai);
+        $ketQua = $stmt->execute();
+        echo 'đúng';
+        if ($ketQua) {
+            $maDonDatSan = $stmt->insert_id;
+            $sqlChiTiet = "INSERT INTO chitietdondatsan (MaDonDatSan, NgayNhanSan, ThoiGianBatDau, ThoiGianKetThuc, MaSanBong, DonGia) 
+                       VALUES (?, ?, ?, ?, ?, ?)";
+            $stmtChiTiet = $con->prepare($sqlChiTiet);
+            $stmtChiTiet->bind_param("isssid", $maDonDatSan, $ngayNhanSan, $gioBatDau, $gioKetThuc, $maSanBong, $tongTien);
+            $ketQuaChiTiet = $stmtChiTiet->execute();
+            
+            if (!$ketQuaChiTiet) {
+                error_log("Error inserting into chitietdondatsan: " . $stmtChiTiet->error);
+                // Xóa đơn đặt sân chính nếu không thể thêm chi tiết
+                $sqlDeleteOrder = "DELETE FROM dondatsan1 WHERE MaDonDatSan = ?";
+                $stmtDeleteOrder = $con->prepare($sqlDeleteOrder);
+                $stmtDeleteOrder->bind_param("i", $maDonDatSan);
+                $stmtDeleteOrder->execute();
+                $ketQua = false;
+            }
+            
+        } else {
+            error_log("Error inserting into dondatsan1: " . $stmt->error);
+        }
+        $p->dongKetNoi($con);
+        return $ketQua;
     }
+    
 
     public function KiemTraSDT($sdt) {
         $p = new mKetNoi();
