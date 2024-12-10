@@ -26,7 +26,7 @@ class mDonDatSan {
             return false;  // Return false if connection fails
         }
 
-        $sql = "SELECT d.MaDonDatSan, d.MaKhachHang, d.TenKhachHang, d.MaSanBong, d.NgayDat, d.GioBatDau, d.GioKetThuc, d.TongTien, d.TrangThai,
+        $sql = "SELECT d.MaDonDatSan, d.MaKhachHang, d.TenKhachHang, d.MaSanBong, d.NgayDat,ct.NgayNhanSan, ct.ThoiGianBatDau, ct.ThoiGianKetThuc ,d.GioBatDau, d.GioKetThuc, d.TongTien, d.TrangThai,
                     s.TenSanBong,
                     s.MoTa AS MoTaSanBong,
                     c.TenCoSo,
@@ -34,7 +34,7 @@ class mDonDatSan {
                 FROM 
                     dondatsan1 d
                 JOIN 
-                    chitietdondatsan 
+                    chitietdondatsan ct ON ct.MaDonDatSan  = d.MaDonDatSan
                 JOIN 
                     sanbong s ON d.MaSanBong = s.MaSanBong
                 JOIN 

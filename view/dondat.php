@@ -33,9 +33,10 @@ if ($kq && mysqli_num_rows($kq) > 0) {
         echo "<td>".$r["MaKhachHang"]."</td>";
         echo "<td>".$r["TenKhachHang"]."</td>";
         echo "<td>".$r["TenSanBong"]."</td>";
-        echo "<td>".$r["GioBatDau"]."</td>";
-        echo "<td>".$r["GioKetThuc"]."</td>";
-        echo "<td>".$r["TongTien"]."</td>";
+        echo "<td>".$r["ThoiGianBatDau"]."</td>";
+        echo "<td>".$r["ThoiGianKetThuc"]."</td>";
+        echo "<td>".number_format($r["TongTien"], 2, '.', ',')."</td>";
+
         echo "<td>".$r["TrangThai"]."</td>";
         echo "<td>
             <form action='#' method = 'post'>
