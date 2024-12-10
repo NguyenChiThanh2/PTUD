@@ -13,12 +13,15 @@ if (isset($_GET["id"])) {
 // Xử lý form khi người dùng nhấn "Lưu"
 if (isset($_POST["btnSave"])) {
     $maDonDatSan = $_POST["maDonDatSan"];
-    $maKH = $_POST["makhang"];
-    $ngayDat = $_POST["ngayDat"];
+    $maKH = $_POST["tenKH"];
+    $ngayNhanSan = $_POST["ngayDat"];
     $gioBatDau = $_POST["gioBatDau"];
-    $gioKetThuc = $_POST["gioKetThuc"];
+    $gioKetThuc = $_POST["gioKetThuc"]; 
     $tongTien = $_POST["tongTien"];
     $trangThai = $_POST["trangThai"];
+    $maSanBong =$_POST['maSan'];
+    $maKhachHang = $_POST['maKhach'];
+    $tenKhachHang =$_POST['tenKH'];
 
     if (strtotime($gioBatDau) >= strtotime($gioKetThuc)) {
         echo "<p style='color: red; text-align: center;'>Giờ bắt đầu phải nhỏ hơn giờ kết thúc!</p>";
@@ -29,7 +32,7 @@ if (isset($_POST["btnSave"])) {
 
 $tongTien = $_POST["tongTien"]; // Hoặc bạn tính toán lại nếu cần
 $cattien = explode(" ", $tongTien);
-$result = $controller->UpDonDatSan($maDonDatSan, $maKH, $ngayDat, $gioBatDau, $gioKetThuc, $trangThai, $cattien[0]);
+$result = $controller->UpDonDatSan($maDonDatSan, $maSanBong, $maKhachHang, $ngayNhanSan, $gioBatDau, $gioKetThuc, $tongTien, $tenKhachHang);
 
     if ($result) {
         echo "<script>
@@ -155,7 +158,7 @@ p {
 
     <form method="POST" action="#">
         <input type="hidden" name="maDonDatSan" value="<?= $donDatSan['MaDonDatSan'] ?>">
-        <input type="hidden" name="makhang" value="<?= $donDatSan['MaKhachHang'] ?>">
+        <input type="hidden" name="maKhach" id="maKhach" value="<?= $donDatSan['MaKhachHang'] ?>">
          <label for="maSan">Mã sân:</label>
     <select id="maSan" name="maSan" required>
         <option value="1" <?= $donDatSan['MaDonDatSan'] == 1 ? 'selected' : '' ?>>Sân 1</option>
@@ -167,13 +170,13 @@ p {
         <input type="text" id="tenKH" name="tenKH" value="<?= $donDatSan['TenKhachHang'] ?>" required>
 
         <label for="ngayDat">Ngày đặt:</label>
-        <input type="date" id="ngayDat" name="ngayDat" value="<?= $donDatSan['NgayDat'] ?>" required>
+        <input type="date" id="ngayDat" name="ngayDat" value="<?= $donDatSan['NgayNhanSan'] ?>" required>
 
         <label for="gioBatDau">Giờ bắt đầu:</label>
-        <input type="time" id="gioBatDau" name="gioBatDau" value="<?= $donDatSan['GioBatDau'] ?>" required>
+        <input type="time" id="gioBatDau" name="gioBatDau" value="<?= $donDatSan['ThoiGianBatDau'] ?>" required>
 
         <label for="gioKetThuc">Giờ kết thúc:</label>
-        <input type="time" id="gioKetThuc" name="gioKetThuc" value="<?= $donDatSan['GioKetThuc'] ?>" required>
+        <input type="time" id="gioKetThuc" name="gioKetThuc" value="<?= $donDatSan['ThoiGianKetThuc'] ?>" required>
 
         <label for="trangThai">Trạng thái:</label>
         <select id="trangThai" name="trangThai" required>
@@ -199,45 +202,50 @@ p {
     };
 
     function calculatePrice() {
-        // Lấy giá trị từ form
-        var maSan = document.getElementById("maSan").value; // Mã sân
-        var gioBatDau = document.getElementById("gioBatDau").value; // Giờ bắt đầu
-        var gioKetThuc = document.getElementById("gioKetThuc").value; // Giờ kết thúc
+    // Lấy giá trị từ form
+    var maSan = document.getElementById("maSan").value; // Mã sân
+    var gioBatDau = document.getElementById("gioBatDau").value; // Giờ bắt đầu
+    var gioKetThuc = document.getElementById("gioKetThuc").value; // Giờ kết thúc
 
-        if (!maSan || !gioBatDau || !gioKetThuc) {
-            alert("Vui lòng chọn mã sân và nhập giờ đầy đủ!");
-            return;
-        }
-
-        var thoiGianBatDau = new Date("1970-01-01T" + gioBatDau + ":00");
-        var thoiGianKetThuc = new Date("1970-01-01T" + gioKetThuc + ":00");
-
-        if (thoiGianBatDau >= thoiGianKetThuc) {
-            alert("Giờ bắt đầu phải nhỏ hơn giờ kết thúc!");
-            return;
-        }
-
-        var tongTien = 0;
-
-        // Tính tiền dựa trên khung giờ
-        while (thoiGianBatDau < thoiGianKetThuc) {
-            var gioHienTai = thoiGianBatDau.getHours();
-
-            // Kiểm tra khung giờ sáng
-            if (gioHienTai >= 6 && gioHienTai < 12) {
-                tongTien += bangGia[maSan]['sang'] / 60; // Giá mỗi phút
-            }
-            // Kiểm tra khung giờ chiều
-            else if (gioHienTai >= 13 && gioHienTai < 23) {
-                tongTien += bangGia[maSan]['chieu'] / 60;
-            }
-            // Tăng thêm 1 phút
-            thoiGianBatDau.setMinutes(thoiGianBatDau.getMinutes() + 1);
-        }
-
-        // Hiển thị tổng tiền (nếu người dùng thay đổi giờ hoặc sân)
-        document.getElementById("tongTien").value = Math.round(tongTien) + " VNĐ";
+    if (!maSan || !gioBatDau || !gioKetThuc) {
+        alert("Vui lòng chọn mã sân và nhập giờ đầy đủ!");
+        return;
     }
+
+    var thoiGianBatDau = new Date("1970-01-01T" + gioBatDau + ":00");
+    var thoiGianKetThuc = new Date("1970-01-01T" + gioKetThuc + ":00");
+
+    if (thoiGianBatDau >= thoiGianKetThuc) {
+        alert("Giờ bắt đầu phải nhỏ hơn giờ kết thúc!");
+        return;
+    }
+
+    var tongTien = 0;
+
+    // Tách thời gian ra thành các khung giờ
+    while (thoiGianBatDau < thoiGianKetThuc) {
+        var gioHienTai = thoiGianBatDau.getHours();
+        var phutHienTai = thoiGianBatDau.getMinutes();
+
+        // Khung giờ sáng (6:00 - 12:00)
+        if (gioHienTai >= 6 && gioHienTai < 12) {
+            tongTien += bangGia[maSan]['sang'] / 60; // Giá mỗi phút
+        }
+        // Khung giờ chiều (13:00 - 23:00)
+        else if (gioHienTai >= 13 && gioHienTai < 23) {
+            tongTien += bangGia[maSan]['chieu'] / 60;
+        }
+        // Tăng thêm 1 phút
+        thoiGianBatDau.setMinutes(phutHienTai + 1);
+    }
+
+    // Làm tròn số tiền
+    tongTien = Math.round(tongTien);
+
+    // Hiển thị tổng tiền (nếu người dùng thay đổi giờ hoặc sân)
+    document.getElementById("tongTien").value = tongTien + " VNĐ";
+}
+
 
     // Gọi hàm tính giá khi thay đổi giờ hoặc sân
     document.getElementById("gioBatDau").addEventListener("change", calculatePrice);

@@ -290,8 +290,10 @@ class mDonDatSan {
     public function GetDonDatSanById($maDonDatSan) {
         $p = new mKetNoi();
         $conn = $p->moKetNoi();
-        $query = "SELECT * FROM DonDatSan1 dds join KhachHang kh on dds.MaKhachHang = kh.MaKhachHang WHERE MaDonDatSan = ?";
-        
+        $query = "SELECT *,kh.MaKhachHang , kh.TenKhachHang, ct.NgayNhanSan , ct.ThoiGianBatDau, ct.ThoiGianKetThuc FROM DonDatSan1 dds 
+        join chitietdondatsan ct on dds.MaDonDatSan = ct.MaDonDatSan 
+        join KhachHang kh on dds.MaKhachHang = kh.MaKhachHang WHERE dds.MaDonDatSan = ?";
+     
         if ($stmt = $conn->prepare($query)) {
             $stmt->bind_param("i", $maDonDatSan);
             $stmt->execute();
@@ -319,27 +321,52 @@ class mDonDatSan {
     //     return false;
     // }
 
-    public function SuaDonDatSan($maDonDatSan, $tenKH, $ngayDat, $gioBatDau, $gioKetThuc, $trangThai, $tongTien) {
+    public function suaDatSan($maDonDatSan, $maSanBong, $maKhachHang, $ngayNhanSan, $gioBatDau, $gioKetThuc, $tongTien, $tenKhachHang) {
         $p = new mKetNoi();
-        $conn = $p->moKetNoi();
-        $query = "UPDATE dondatsan1 
-                  SET MaKhachHang = '$tenKH', 
-                      NgayDat = '$ngayDat', 
-                      GioBatDau = '$gioBatDau', 
-                      GioKetThuc = '$gioKetThuc', 
-                      TrangThai = '$trangThai', 
-                      TongTien = '$tongTien' 
-                  WHERE MaDonDatSan ='$maDonDatSan'";
-    $stmt = $conn->query($query);
-    if($stmt){
-        return $stmt;
-        // $stmt->bind_param("ssssssi", $tenKH, $ngayDat, $gioBatDau, $gioKetThuc, $trangThai, $tongTien, $maDonDatSan);
-        // return $stmt->execute();
-    } else{
-        return false;
+        $con = $p->moKetNoi();
+    
+        // Kiểm tra nếu các trường quan trọng bị trống
+        if (empty($maDonDatSan) || empty($maSanBong) || empty($maKhachHang) || 
+            empty($ngayNhanSan) || empty($gioBatDau) || empty($gioKetThuc) || empty($tongTien)) {
+            error_log("Error: Missing required fields for update.");
+            return false;
+        }
+    
+        // Cập nhật thông tin trong bảng dondatsan1
+        $sqlUpdateDon = "UPDATE dondatsan1 
+                          SET MaKhachHang = ?, TenKhachHang = ?, MaSanBong = ?, TongTien = ?
+                          WHERE MaDonDatSan = ?";
+        $stmtDon = $con->prepare($sqlUpdateDon);
+        $stmtDon->bind_param("issdi", $maKhachHang, $tenKhachHang, $maSanBong, $tongTien, $maDonDatSan);
+        $ketQuaDon = $stmtDon->execute();
+    
+        if (!$ketQuaDon) {
+            error_log("Error updating dondatsan1: " . $stmtDon->error);
+            $p->dongKetNoi($con);
+            return false;
+        }
+    
+        // Cập nhật thông tin trong bảng chitietdondatsan
+        $sqlUpdateChiTiet = "UPDATE chitietdondatsan 
+                             SET NgayNhanSan = ?, ThoiGianBatDau = ?, ThoiGianKetThuc = ?, MaSanBong = ?, DonGia = ?
+                             WHERE MaDonDatSan = ?";
+        $stmtChiTiet = $con->prepare($sqlUpdateChiTiet);
+        $stmtChiTiet->bind_param("sssidi", $ngayNhanSan, $gioBatDau, $gioKetThuc, $maSanBong, $tongTien, $maDonDatSan);
+        $ketQuaChiTiet = $stmtChiTiet->execute();
+    
+        if (!$ketQuaChiTiet) {
+            error_log("Error updating chitietdondatsan: " . $stmtChiTiet->error);
+            $p->dongKetNoi($con);
+            return false;
+        }
+    
+        // Đóng kết nối và trả về kết quả
+        $p->dongKetNoi($con);
+        return true;
     }
     
-}
+    
+
     
 }
    

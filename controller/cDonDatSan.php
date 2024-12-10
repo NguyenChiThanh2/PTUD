@@ -105,6 +105,7 @@ class cDonDatSan {
     // Sửa lại tên phương thức từ GetDonById thành GetDonDatSanById
     public function GetDonDatSanById($maDonDatSan) {
         $model = new mDonDatSan(); 
+        
         return $model->GetDonDatSanById($maDonDatSan); // Gọi đúng phương thức của lớp model
     }
 
@@ -117,9 +118,9 @@ class cDonDatSan {
 //     // Gọi hàm cập nhật trong model và truyền thêm tổng tiền
 //     return $model->SuaDonDatSan($maDonDatSan, $tenKH, $ngayDat, $gioBatDau, $gioKetThuc, $trangThai);
 // }
-public function UpDonDatSan($maDonDatSan, $tenKH, $ngayDat, $gioBatDau, $gioKetThuc, $trangThai, $tongTien) {
+public function UpDonDatSan($maDonDatSan, $maSanBong, $maKhachHang, $ngayNhanSan, $gioBatDau, $gioKetThuc, $tongTien, $tenKhachHang) {
     $model = new mDonDatSan();
-    return $model->SuaDonDatSan($maDonDatSan, $tenKH, $ngayDat, $gioBatDau, $gioKetThuc, $trangThai, $tongTien);
+    return $model->suaDatSan($maDonDatSan, $maSanBong, $maKhachHang, $ngayNhanSan, $gioBatDau, $gioKetThuc, $tongTien, $tenKhachHang);
 }
 
     
