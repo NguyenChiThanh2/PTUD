@@ -12,7 +12,10 @@ include_once("controller/cSan.php");
 $p = new cSan();
 
 // Lấy danh sách sân theo loại hoặc tất cả sân
-if (isset($_REQUEST["idloai"])){
+if(isset($_SESSION['MaChuSan'])){
+    $kq = $p->getAllSanBongByMaChuSan($_SESSION['MaChuSan']);
+}
+elseif (isset($_REQUEST["idloai"])){
     $kq = $p->GetSanbyType($_REQUEST["idloai"]);
 }else if(isset($_REQUEST['btnTim'])) {
     $kq = $p->GetSanbyName($_REQUEST["txtTuKhoa"]);

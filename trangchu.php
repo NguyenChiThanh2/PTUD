@@ -89,7 +89,7 @@ ob_start();
 <body>
     <header id="header">
         <div class="logo">
-            <img src="../img/path_to_logo.png" alt="Sport Logo">
+            <img src="img/logo.jpg" alt="Sport Logo" width="100px">
         </div>
         <nav id="menu">
             <ul>
@@ -162,7 +162,7 @@ ob_start();
         <div class="box">
             <h3>GIỚI THIỆU</h3>
             <div class="logo">
-                <img src="assets/logo.png" alt="Logo">
+                <img src="img/logo.jpg" alt="Logo" width="200px">
             </div>
             <p>Cung cấp một nền tảng tiện lợi, giúp người dùng dễ dàng tìm kiếm, đặt chỗ và quản lý việc thuê sân bóng</p>
         </div>

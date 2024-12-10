@@ -96,7 +96,7 @@ article p {
 <body>
     <header id="header">
         <div class="logo">
-            <img src="../img/path_to_logo.png" alt="Sport Logo">
+        <img src="img/logo.jpg" alt="Sport Logo" width="100px">
         </div>
         <nav id="menu">
             <ul>
@@ -173,6 +173,14 @@ article p {
                 include_once("View/QLKhachHang/quanlykhachhang.php");         
             }elseif (isset($_REQUEST["action"]) && $_REQUEST["action"] === "updateKhachHang"){
                 include_once("View/QLKhachHang/updateKhachHang.php");
+            }elseif (isset($_REQUEST["action"]) && $_REQUEST["action"] === "deleteKhachHang"){
+                include_once("View/QLKhachHang/deleteKhachHang.php");
+            }elseif(isset($_REQUEST["chusan"])){
+                include_once("View/QLChuSan/quanlyChuSan.php");         
+            }elseif (isset($_REQUEST["action"]) && $_REQUEST["action"] === "updateChuSan"){
+                include_once("View/QLChuSan/updateChuSan.php");
+            }elseif (isset($_REQUEST["action"]) && $_REQUEST["action"] === "deleteChuSan"){
+                include_once("View/QLChuSan/deleteChuSan.php");
             }elseif (isset($_REQUEST["printDon"])){
                 include_once("View/duyetdondatsan.php");          
             }elseif (isset($_REQUEST["dondat"])){

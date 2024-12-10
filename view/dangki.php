@@ -15,7 +15,9 @@
         $kq = $p->getAUserByEmail($email);
         if(!$kq){
             $p2 = new ControllerUser();
+            
             $kq2 = $p->registerTK($hoten, $email, $matkhau, $sodienthoai, $diachi, $gioitinh, $loaiTK);
+            header("refresh: 0.5; url=dangnhap.php");
         }else{
             echo "<script>alert('Email đã tồn tại, vui lòng sử dụng email khác !')</script>";
         }

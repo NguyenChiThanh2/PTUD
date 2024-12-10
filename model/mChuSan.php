@@ -1,6 +1,54 @@
 <?php 
       include_once("mKetNoi.php");
       class ModelChuSan {
+
+        public function selectAllChuSan() {
+          $p = new mKetNoi();
+          $con = $p->moKetNoi();
+          $sql = "select * from chusan";
+          $kq = $con->query($sql);
+          $p->dongKetNoi($con);
+          return $kq;
+      }
+      public function selectAllChuSanByMaChuSan($machusan){
+        $p = new mKetNoi();
+        $con=$p->moKetNoi();
+      
+              $truyvan = "select * from chusan where MaChuSan = $machusan";
+
+              $kq = mysqli_query($con, $truyvan);
+              
+              $p->dongKetNoi($con);
+              return $kq;
+       
+    }
+    public function updateChuSan($maCS, $TenCS, $email, $sdt, $matKhau, $diaChi, $gioitinh){
+      $p = new mKetNoi();
+      $con = $p->moKetNoi();  
+      // Truy vấn cập nhật thông tin nhân viên
+      $truyvan = "UPDATE `chusan` SET 
+                  `TenChuSan`= N'$TenCS',
+                  `Email`='$email',
+                  `SDT`='$sdt',
+                  `MatKhau`='$matKhau',
+                  `DiaChi`='$diaChi',
+                  `GioiTinh`='$gioitinh' 
+                  WHERE `MaChuSan` = $maCS";
+      $kq = mysqli_query($con, $truyvan);
+      $p->dongKetNoi($con);
+      return $kq;
+    }
+
+    public function deleteChuSan($maCS){
+      $p = new mKetNoi();
+      $truyvan = "delete from chusan where MaChuSan = '$maCS'";
+      $con = $p -> moKetNoi();
+      $kq = mysqli_query($con, $truyvan);
+      $p -> dongKetNoi($con);
+      return $kq;
+    }
+
+
         public function selectAllNhanVien() {
             $p = new mKetNoi();
             $con = $p->moKetNoi();

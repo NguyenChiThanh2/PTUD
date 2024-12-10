@@ -1,6 +1,57 @@
 <?php 
       include_once("./model/mChuSan.php");
       class ControllerChuSan{
+        public function getAllChuSan(){
+            $p = new ModelChuSan();
+            $kq = $p->selectAllChuSan();
+            if(!$kq){
+                echo "Không có dữ liệu!";
+            }else{
+                if($kq->num_rows > 0)
+                    return $kq;
+            }
+        }
+        public function GetChuSanByMaChuSan($maChuSan){
+            $p = new ModelChuSan();
+            
+            $kq =$p->selectAllChuSanByMaChuSan($maChuSan);
+            
+            if(mysqli_num_rows($kq)>0){
+                return $kq;
+            }else{  
+                return false;
+            }
+        }
+
+        public function updateChuSan($maCS, $tenCS, $email, $sdt, $matKhau, $diaChi, $gioitinh){
+            $p = new ModelChuSan();
+                
+            $kq =$p->updateChuSan($maCS, $tenCS, $email, $sdt, $matKhau, $diaChi, $gioitinh);
+          
+            if($kq){
+                return $kq;
+            }else{
+                return false;
+            }
+        }
+
+        public function deleteChuSan($maChuSan){
+            $p = new ModelChuSan();
+            $kq = $p -> deleteChuSan($maChuSan);
+            return $kq;
+        }
+
+
+
+        public function GetKhachHangByMaKhachHang($maKH){
+            $p = new ModelKhachHang();
+            $kq =$p->SelectKhachHangByMaKhachHang($maKH);
+            if(mysqli_num_rows($kq)>0){
+                return $kq;
+            }else{  
+                return false;
+            }
+        }
         public function getAllNhanVien(){
             $p = new ModelChuSan();
             $kq = $p->selectAllNhanVien();

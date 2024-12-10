@@ -84,6 +84,15 @@
                 return $kq;
               }
 
+              public function deleteKhachHang($maKH){
+                $p = new mKetNoi();
+                $truyvan = "delete from khachhang where MaKhachHang = '$maKH'";
+                $con = $p -> moKetNoi();
+                $kq = mysqli_query($con, $truyvan);
+                $p -> dongKetNoi($con);
+                return $kq;
+              }
+
 
 
       }

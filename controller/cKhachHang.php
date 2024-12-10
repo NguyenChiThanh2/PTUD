@@ -66,6 +66,13 @@ include_once("model/mKhachHang.php");
         }
 
         
+        public function deleteKhachHang($maKH){
+            $p = new ModelKhachHang();
+            $kq = $p -> deleteKhachHang($maKH);
+            return $kq;
+        }
+
+        
 
 
 

@@ -34,6 +34,8 @@ class mDonDatSan {
                 FROM 
                     dondatsan1 d
                 JOIN 
+                    chitietdondatsan 
+                JOIN 
                     sanbong s ON d.MaSanBong = s.MaSanBong
                 JOIN 
                     coso c ON s.MaCoSo = c.MaCoSo

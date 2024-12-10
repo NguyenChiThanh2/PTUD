@@ -26,7 +26,7 @@ if ($kq) {
     <button class='btn-other'>
         <a class='edit-button' href='";
 if (isset($_SESSION['loaiNguoiDung'])) {
-    if ($_SESSION['loaiNguoiDung'] == 'nhanvien') {
+    if ($_SESSION['loaiNguoiDung'] == 'nhanvien' || $_SESSION['loaiNguoiDung'] == 'chusan') {
         echo "view/datsan.php?idSan=".$r["MaSanBong"]."&mals=".$r["MaLoaiSan"];
     } elseif ($_SESSION['loaiNguoiDung'] == 'khachhang') {
         echo "view/kh_datsan.php?idsan=".$r["MaSanBong"];
