@@ -63,6 +63,17 @@ include_once(__DIR__ . "/../model/mSan.php");
             }
         }
 
+        public function GetSanbyTypeAndMaChuSan($idloai,$maChuSan){
+            $p = new mSan();
+            $kq =$p->GetSanbyTypeAndMaChuSan($idloai,$maChuSan);
+            if(!$kq){
+                echo "Không có dữ liệu!";
+            }else{
+                if($kq->num_rows > 0)
+                    return $kq;
+            }
+        }
+
         public function getInfo1San($maSan,$maChuSan){
             $p = new mSan();
             $kq = $p->selectInfo1San($maSan,$maChuSan);

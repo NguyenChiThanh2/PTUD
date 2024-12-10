@@ -14,6 +14,9 @@ $p = new cSan();
 // Lấy danh sách sân theo loại hoặc tất cả sân
 if(isset($_SESSION['MaChuSan'])){
     $kq = $p->getAllSanBongByMaChuSan($_SESSION['MaChuSan']);
+    if(isset($_REQUEST["idloai"])){
+        $kq = $p->GetSanbyTypeAndMaChuSan($_REQUEST["idloai"],$_SESSION['MaChuSan']);
+    }
 }
 elseif (isset($_REQUEST["idloai"])){
     $kq = $p->GetSanbyType($_REQUEST["idloai"]);

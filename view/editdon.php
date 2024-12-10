@@ -161,9 +161,20 @@ p {
         <input type="hidden" name="maKhach" id="maKhach" value="<?= $donDatSan['MaKhachHang'] ?>">
          <label for="maSan">Mã sân:</label>
     <select id="maSan" name="maSan" required>
-        <option value="1" <?= $donDatSan['MaDonDatSan'] == 1 ? 'selected' : '' ?>>Sân 1</option>
-        <option value="2" <?= $donDatSan['MaDonDatSan'] == 2 ? 'selected' : '' ?>>Sân 2</option>
-        <option value="3" <?= $donDatSan['MaDonDatSan'] == 3 ? 'selected' : '' ?>>Sân 3</option>
+    <?php
+            include_once("controller/cSan.php");
+            $pnv = new cSan();
+            $kqnv = $pnv->getAllSanBongByMaChuSan($_SESSION['MaChuSan']);
+            
+            if ($kqnv) {
+                while ($row = mysqli_fetch_assoc($kqnv)) {
+                    $selected = ($row['MaSanBong'] == $maSanBong) ? "selected" : "";
+                    echo "<option value='{$row['MaSanBong']}' $selected>{$row['TenSanBong']}</option>";
+                }
+            } else {
+                echo "<option value=''>Không có sân bóng nào</option>";
+            }
+            ?>
     </select>
 
         <label for="tenKH">Tên khách hàng:</label>

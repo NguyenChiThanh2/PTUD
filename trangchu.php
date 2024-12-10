@@ -172,7 +172,7 @@ ob_start();
                 <li class="item"><a href="index.php">Trang chủ</a></li>
                 <li class="item"><a href="San.php">Danh sách sân</a></li>
                 <li class="item"><a href="#">Dịch vụ</a></li>
-                <li class="item"><a href="#">Liên hệ</a></li>
+                <li class="item"><a href="https://www.facebook.com/chuyen.cho.thue.san.bong/">Liên hệ</a></li>
             </ul>
         </div>
         <div class="box">

@@ -18,7 +18,6 @@ if (isset($_GET['MaSanBong'])) {
             $moTaSan = $sanBongData['MoTa'];
             
             $thoiGianHoatDong = $sanBongData['ThoiGianHoatDong'];
-            echo $thoiGianHoatDong;
             $parts = explode(" - ", $thoiGianHoatDong);
             $giobatdau = date("H:i", strtotime($parts[0] ?? '')); // Chuyển 6:00 AM thành 06:00
             $giokethuc = date("H:i", strtotime($parts[1] ?? '')); // Chuyển 6:00 PM thành 18:00

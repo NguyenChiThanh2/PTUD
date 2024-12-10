@@ -290,7 +290,7 @@ class mDonDatSan {
     public function GetDonDatSanById($maDonDatSan) {
         $p = new mKetNoi();
         $conn = $p->moKetNoi();
-        $query = "SELECT *,kh.MaKhachHang , kh.TenKhachHang, ct.NgayNhanSan , ct.ThoiGianBatDau, ct.ThoiGianKetThuc FROM DonDatSan1 dds 
+        $query = "SELECT dds.MaDonDatSan, dds.TrangThai, dds.TongTien ,dds.TenKhachHang,kh.MaKhachHang, ct.NgayNhanSan , ct.ThoiGianBatDau, ct.ThoiGianKetThuc FROM DonDatSan1 dds 
         join chitietdondatsan ct on dds.MaDonDatSan = ct.MaDonDatSan 
         join KhachHang kh on dds.MaKhachHang = kh.MaKhachHang WHERE dds.MaDonDatSan = ?";
      

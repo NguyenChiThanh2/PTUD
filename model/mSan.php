@@ -95,6 +95,21 @@
                 $p->dongKetNoi($con);
                 return $kq; 
               }
+
+              public function GetSanbyTypeAndMaChuSan($idloai,$maChuSan) {
+                $p = new mKetNoi();
+                $con = $p->moKetNoi();
+                $sql = "SELECT sanbong.MaSanBong, sanbong.TenSanBong, sanbong.ThoiGianHoatDong, sanbong.MoTa, sanbong.HinhAnh, nhanvien.TenNhanVien, loaisan.TenLoai, coso.TenCoSo
+                FROM sanbong
+                JOIN coso ON sanbong.MaCoSo = coso.MaCoSo
+                JOIN loaisan ON sanbong.MaLoaiSan = loaisan.MaLoaiSan
+                JOIN nhanvien ON sanbong.MaNhanVien = nhanvien.MaNhanVien
+                WHERE nhanvien.MaChuSan = '$maChuSan' AND sanbong.MaLoaiSan = $idloai";
+    
+                $kq = mysqli_query($con, $sql);
+                $p->dongKetNoi($con);
+                return $kq; 
+              }
     
     
               public function selectInfo1San($maSanBong,$maChuSan) {
