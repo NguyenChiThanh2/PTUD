@@ -4,35 +4,31 @@ include_once("Controller/cDonDatSan.php");
 
 $controller = new cDonDatSan();
 
-// Lấy thông tin chi tiết đơn đặt sân
 if (isset($_GET["id"])) {
     $maDonDatSan = $_GET["id"];
     $donDatSan = mysqli_fetch_assoc($controller->GetDonDatSanById($maDonDatSan)); 
 }
 
-// Xử lý form khi người dùng nhấn "Lưu"
+// Handle form submission
 if (isset($_POST["btnSave"])) {
     $maDonDatSan = $_POST["maDonDatSan"];
-    $maKH = $_POST["tenKH"];
+    $maSanBong = $_POST['maSan'];
+    $maKhachHang = $_POST['maKhach'];
     $ngayNhanSan = $_POST["ngayDat"];
     $gioBatDau = $_POST["gioBatDau"];
-    $gioKetThuc = $_POST["gioKetThuc"]; 
-    $tongTien = $_POST["tongTien"];
+    $gioKetThuc = $_POST["gioKetThuc"];
     $trangThai = $_POST["trangThai"];
-    $maSanBong =$_POST['maSan'];
-    $maKhachHang = $_POST['maKhach'];
-    $tenKhachHang =$_POST['tenKH'];
+    $tongTien = str_replace(" VNĐ", "", str_replace(",", "", $_POST["tongTien"]));
 
     if (strtotime($gioBatDau) >= strtotime($gioKetThuc)) {
-        echo "<p style='color: red; text-align: center;'>Giờ bắt đầu phải nhỏ hơn giờ kết thúc!</p>";
+        echo "<script>
+                alert('Giờ bắt đầu phải sớm hơn giờ kết thúc!');
+                window.history.back();
+              </script>";
         exit();
     }
 
-  
-
-$tongTien = $_POST["tongTien"]; // Hoặc bạn tính toán lại nếu cần
-$cattien = explode(" ", $tongTien);
-$result = $controller->UpDonDatSan($maDonDatSan, $maSanBong, $maKhachHang, $ngayNhanSan, $gioBatDau, $gioKetThuc, $tongTien, $tenKhachHang);
+    $result = $controller->UpDonDatSan($maDonDatSan, $maSanBong, $maKhachHang, $ngayNhanSan, $gioBatDau, $gioKetThuc, $tongTien, $_POST['tenKH']);
 
     if ($result) {
         echo "<script>
@@ -55,6 +51,103 @@ $result = $controller->UpDonDatSan($maDonDatSan, $maSanBong, $maKhachHang, $ngay
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sửa Đơn Đặt Sân</title>
     <style>
+        /* CSS remains the same */
+    </style>
+</head>
+<body>
+    <h1>Sửa Đơn Đặt Sân</h1>
+
+    <form method="POST" action="#">
+        <input type="hidden" name="maDonDatSan" value="<?= $donDatSan['MaDonDatSan'] ?>">
+        <input type="hidden" name="maKhach" id="maKhach" value="<?= $donDatSan['MaKhachHang'] ?>">
+
+        <label for="maSan">Mã sân:</label>
+        <select id="maSan" name="maSan" required>
+        <?php
+            include_once("Controller/cSan.php");
+            $pnv = new cSan();
+            $kqnv = $pnv->getAllSanBongByMaChuSan($_SESSION['MaChuSan']);
+            
+            if ($kqnv) {
+                while ($row = mysqli_fetch_assoc($kqnv)) {
+                    $selected = ($row['MaSanBong'] == $donDatSan['MaSanBong']) ? "selected" : "";
+                    echo "<option value='{$row['MaSanBong']}' $selected>{$row['TenSanBong']}</option>";
+                }
+            } else {
+                echo "<option value=''>Không có sân bóng nào</option>";
+            }
+        ?>
+        </select>
+
+        <label for="tenKH">Tên khách hàng:</label>
+        <input type="text" id="tenKH" name="tenKH" value="<?= $donDatSan['TenKhachHang'] ?>" required>
+
+        <label for="ngayDat">Ngày đặt:</label>
+        <input type="date" id="ngayDat" name="ngayDat" value="<?= $donDatSan['NgayNhanSan'] ?>" required>
+
+        <label for="gioBatDau">Giờ bắt đầu:</label>
+        <input type="time" id="gioBatDau" name="gioBatDau" value="<?= $donDatSan['ThoiGianBatDau'] ?>" required>
+
+        <label for="gioKetThuc">Giờ kết thúc:</label>
+        <input type="time" id="gioKetThuc" name="gioKetThuc" value="<?= $donDatSan['ThoiGianKetThuc'] ?>" required>
+
+        <label for="trangThai">Trạng thái:</label>
+        <select id="trangThai" name="trangThai" required>
+            <option value="Chờ duyệt" <?= $donDatSan['TrangThai'] == 'Chờ duyệt' ? 'selected' : '' ?>>Chờ duyệt</option>
+            <option value="Đã đặt" <?= $donDatSan['TrangThai'] == 'Đã đặt' ? 'selected' : '' ?>>Đã đặt</option>
+            <option value="Hủy" <?= $donDatSan['TrangThai'] == 'Hủy' ? 'selected' : '' ?>>Hủy</option>
+        </select>
+
+        <label for="tongTien">Tổng tiền:</label>
+        <input type="text" id="tongTien" name="tongTien" value="<?= number_format($donDatSan['TongTien'], 0, ',', '.') ?> VNĐ" readonly>
+
+        <button type="submit" name="btnSave">Lưu</button>
+        <a href="admin.php?dondat">Quay lại</a>
+    </form>
+
+    <script>
+        const bangGia = {
+            1: { 'sang': 100000, 'chieu': 120000 },
+            2: { 'sang': 150000, 'chieu': 170000 },
+            3: { 'sang': 200000, 'chieu': 250000 }
+        };
+
+        function tinhTongTien() {
+            const gioBatDau = document.getElementById("gioBatDau").value;
+            const gioKetThuc = document.getElementById("gioKetThuc").value;
+
+            if (gioBatDau && gioKetThuc) {
+                const thoiGianBatDau = new Date(`2000-01-01T${gioBatDau}`);
+                const thoiGianKetThuc = new Date(`2000-01-01T${gioKetThuc}`);
+                let tongTien = 0;
+
+                while (thoiGianBatDau < thoiGianKetThuc) {
+                    const gio = thoiGianBatDau.getHours();
+                    if (gio >= 6 && gio < 12) {
+                        tongTien += bangGia[1].sang / 60;
+                    } else if (gio >= 13 && gio < 23) {
+                        tongTien += bangGia[1].chieu / 60;
+                    }
+                    thoiGianBatDau.setMinutes(thoiGianBatDau.getMinutes() + 1);
+                }
+
+                document.getElementById("tongTien").value = Math.round(tongTien).toLocaleString('vi-VN') + ' VNĐ';
+            }
+        }
+
+        document.getElementById("gioBatDau").addEventListener("input", tinhTongTien);
+        document.getElementById("gioKetThuc").addEventListener("input", tinhTongTien);
+
+        window.onload = function() {
+            tinhTongTien();
+        };
+    </script>
+</body>
+</html>
+
+
+
+<style>
         /* Tổng thể form */
 form {
     width: 60%;
@@ -124,7 +217,7 @@ button[type="submit"]:hover {
 a {
     display: block;
     text-align: center;
-    margin-top: 15px;
+    margin-top: 0px;
     font-size: 16px;
     color: #007bff;
     text-decoration: none;
@@ -152,122 +245,3 @@ p {
     }
 }
     </style>
-</head>
-<body>
-    <h1>Sửa Đơn Đặt Sân</h1>
-
-    <form method="POST" action="#">
-        <input type="hidden" name="maDonDatSan" value="<?= $donDatSan['MaDonDatSan'] ?>">
-        <input type="hidden" name="maKhach" id="maKhach" value="<?= $donDatSan['MaKhachHang'] ?>">
-         <label for="maSan">Mã sân:</label>
-    <select id="maSan" name="maSan" required>
-    <?php
-            include_once("controller/cSan.php");
-            $pnv = new cSan();
-            $kqnv = $pnv->getAllSanBongByMaChuSan($_SESSION['MaChuSan']);
-            
-            if ($kqnv) {
-                while ($row = mysqli_fetch_assoc($kqnv)) {
-                    $selected = ($row['MaSanBong'] == $maSanBong) ? "selected" : "";
-                    echo "<option value='{$row['MaSanBong']}' $selected>{$row['TenSanBong']}</option>";
-                }
-            } else {
-                echo "<option value=''>Không có sân bóng nào</option>";
-            }
-            ?>
-    </select>
-
-        <label for="tenKH">Tên khách hàng:</label>
-        <input type="text" id="tenKH" name="tenKH" value="<?= $donDatSan['TenKhachHang'] ?>" required>
-
-        <label for="ngayDat">Ngày đặt:</label>
-        <input type="date" id="ngayDat" name="ngayDat" value="<?= $donDatSan['NgayNhanSan'] ?>" required>
-
-        <label for="gioBatDau">Giờ bắt đầu:</label>
-        <input type="time" id="gioBatDau" name="gioBatDau" value="<?= $donDatSan['ThoiGianBatDau'] ?>" required>
-
-        <label for="gioKetThuc">Giờ kết thúc:</label>
-        <input type="time" id="gioKetThuc" name="gioKetThuc" value="<?= $donDatSan['ThoiGianKetThuc'] ?>" required>
-
-        <label for="trangThai">Trạng thái:</label>
-        <select id="trangThai" name="trangThai" required>
-            <option value="Chờ duyệt" <?= $donDatSan['TrangThai'] == 'Chờ duyệt' ? 'selected' : '' ?>>Chờ duyệt</option>
-            <option value="Đã đặt" <?= $donDatSan['TrangThai'] == 'Đã đặt' ? 'selected' : '' ?>>Đã đặt</option>
-            <option value="Hủy" <?= $donDatSan['TrangThai'] == 'Hủy' ? 'selected' : '' ?>>Hủy</option>
-        </select>
-           <input type="hidden" id="tongTienBanDau" value="<?= $donDatSan['TongTien'] ?>">
-
-        <label for="tongTien">Tổng tiền:</label>
-        <input type="text" id="tongTien" name="tongTien" value="<?= $donDatSan['TongTien'] ?>" readonly>
-
-        <button type="submit" name="btnSave">Lưu</button>
-        <a href="admin.php?dondat">Quay lại</a>
-    </form>
-
-    <script>
-    // Bảng giá
-    var bangGia = {
-        1: { 'sang': 100000, 'chieu': 120000 },
-        2: { 'sang': 150000, 'chieu': 170000 },
-        3: { 'sang': 200000, 'chieu': 250000 }
-    };
-
-    function calculatePrice() {
-    // Lấy giá trị từ form
-    var maSan = document.getElementById("maSan").value; // Mã sân
-    var gioBatDau = document.getElementById("gioBatDau").value; // Giờ bắt đầu
-    var gioKetThuc = document.getElementById("gioKetThuc").value; // Giờ kết thúc
-
-    if (!maSan || !gioBatDau || !gioKetThuc) {
-        alert("Vui lòng chọn mã sân và nhập giờ đầy đủ!");
-        return;
-    }
-
-    var thoiGianBatDau = new Date("1970-01-01T" + gioBatDau + ":00");
-    var thoiGianKetThuc = new Date("1970-01-01T" + gioKetThuc + ":00");
-
-    if (thoiGianBatDau >= thoiGianKetThuc) {
-        alert("Giờ bắt đầu phải nhỏ hơn giờ kết thúc!");
-        return;
-    }
-
-    var tongTien = 0;
-
-    // Tách thời gian ra thành các khung giờ
-    while (thoiGianBatDau < thoiGianKetThuc) {
-        var gioHienTai = thoiGianBatDau.getHours();
-        var phutHienTai = thoiGianBatDau.getMinutes();
-
-        // Khung giờ sáng (6:00 - 12:00)
-        if (gioHienTai >= 6 && gioHienTai < 12) {
-            tongTien += bangGia[maSan]['sang'] / 60; // Giá mỗi phút
-        }
-        // Khung giờ chiều (13:00 - 23:00)
-        else if (gioHienTai >= 13 && gioHienTai < 23) {
-            tongTien += bangGia[maSan]['chieu'] / 60;
-        }
-        // Tăng thêm 1 phút
-        thoiGianBatDau.setMinutes(phutHienTai + 1);
-    }
-
-    // Làm tròn số tiền
-    tongTien = Math.round(tongTien);
-
-    // Hiển thị tổng tiền (nếu người dùng thay đổi giờ hoặc sân)
-    document.getElementById("tongTien").value = tongTien + " VNĐ";
-}
-
-
-    // Gọi hàm tính giá khi thay đổi giờ hoặc sân
-    document.getElementById("gioBatDau").addEventListener("change", calculatePrice);
-    document.getElementById("gioKetThuc").addEventListener("change", calculatePrice);
-    document.getElementById("maSan").addEventListener("change", calculatePrice);
-
-    // Giữ nguyên giá tiền ban đầu khi tải trang
-    window.onload = function () {
-        var tongTienBanDau = document.getElementById("tongTienBanDau").value;
-        document.getElementById("tongTien").value = tongTienBanDau;
-    };
-</script>
-</body>
-</html>

@@ -96,11 +96,20 @@ class cDonDatSan {
         return false; // Trả về false nếu thất bại
     }
 
-    public function deletedatsan($maDonDatSan) {
-        $p = new mDonDatSan(); // Gọi model
-        $kq = $p->deletedatsan($maDonDatSan); // Gọi hàm deletedatsan trong model
-        return $kq; // Trả về kết quả
-    }
+
+ public function updateTrangThaiDatSan($maDonDatSan, $trangThai) {
+    // Tạo đối tượng của model mDonDatSan
+    $model = new mDonDatSan();
+    
+    // Gọi hàm trong model để cập nhật trạng thái đơn đặt sân
+    $ketQua = $model->updateTrangThaiDatSan($maDonDatSan, $trangThai);
+    
+    // Trả về kết quả của quá trình cập nhật (true/false)
+    return $ketQua;
+}
+
+    
+    
     
     // Sửa lại tên phương thức từ GetDonById thành GetDonDatSanById
     public function GetDonDatSanById($maDonDatSan) {

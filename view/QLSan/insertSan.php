@@ -120,15 +120,16 @@
 
     <script>
 
-        document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", function () {
     // Lấy các phần tử DOM
     const errorMessage = document.querySelector(".error-message");
     const form = document.querySelector(".form-container");
-    const thoiGianHoatDongInput = document.getElementById("ThoiGianHoatDong");
     const tenSanInput = document.getElementById("TenSan");
     const loaiSanSelect = document.getElementById("LoaiSan");
     const giaThueSang = document.getElementById("GiaThueSang");
     const giaThueChieu = document.getElementById("GiaThueChieu");
+    const gioMoCuaInput = document.getElementById("GioBatDau");
+    const gioDongCuaInput = document.getElementById("GioDongCua");
 
     // Hàm cập nhật giá thuê dựa vào loại sân
     function updatePrice() {
@@ -148,8 +149,8 @@
                 giaThueChieu.value = "250,000";
                 break;
             default:
-                giaThueSang.value = "...";
-                giaThueChieu.value = "...";
+                giaThueSang.value = "";
+                giaThueChieu.value = "";
                 break;
         }
     }
@@ -159,81 +160,56 @@
 
     // Gán sự kiện khi người dùng thay đổi loại sân
     loaiSanSelect.addEventListener("change", updatePrice);
+
     // Hàm kiểm tra tên sân hợp lệ
     function validateTenSan() {
         const tenSanValue = tenSanInput.value.trim();
-        const errorElement = document.querySelector(".error-message");
-
-        if (tenSanValue === "" || tenSanValue.length < 3) {
-            tenSanInput.style.border = "2px solid red"; // Viền đỏ nếu không hợp lệ
-            errorElement.style.display = "block";
-            errorElement.innerText = "Tên sân phải có ít nhất 3 ký tự!";
-            return false;
-        } else {
-            tenSanInput.style.border = "2px solid green"; // Viền xanh nếu hợp lệ
-            errorElement.style.display = "none";
-            return true;
-        }
-    }
-
-    // Hàm kiểm tra thời gian hoạt động hợp lệ
-        function validateThoiGianHoatDong() {
-        const value = thoiGianHoatDongInput.value.trim();
-        const errorElement = thoiGianHoatDongInput.nextElementSibling;
-
-        // Điều chỉnh regex để hỗ trợ định dạng giờ từ 1 chữ số hoặc 2 chữ số
-        const regex = /^([1-9]|1[0-9]|2[0-3]):[0-5][0-9]\s-\s([1-9]|1[0-9]|2[0-3]):[0-5][0-9]$/;
-
-        // Kiểm tra định dạng thời gian
-        if (!regex.test(value)) {
-            thoiGianHoatDongInput.style.border = "2px solid red";
-            errorElement.style.display = "block";
-            errorElement.innerText = "Thời gian hoạt động phải theo định dạng: HH:MM - HH:MM (Ví dụ: 6:00 - 23:00)";
+        if (tenSanValue.length < 3) {
+            errorMessage.innerText = "Tên sân phải có ít nhất 3 ký tự!";
+            errorMessage.style.display = "block";
+            tenSanInput.style.border = "2px solid red";
             return false;
         }
-
-        // Tách giờ bắt đầu và kết thúc
-        const [start, end] = value.split(" - ");
-
-        // Hàm chuyển đổi thời gian thành số phút kể từ 00:00
-        function convertToMinutes(time) {
-            const [hour, minute] = time.split(":");
-            let hourInt = parseInt(hour);
-            let minuteInt = parseInt(minute);
-
-            // Tính tổng số phút từ 00:00
-            return hourInt * 60 + minuteInt;
-        }
-
-        const startTimeInMinutes = convertToMinutes(start);
-        const endTimeInMinutes = convertToMinutes(end);
-
-        // Kiểm tra giờ kết thúc phải lớn hơn giờ bắt đầu
-        if (startTimeInMinutes >= endTimeInMinutes) {
-            thoiGianHoatDongInput.style.border = "2px solid red";
-            errorElement.style.display = "block";
-            errorElement.innerText = "Giờ kết thúc phải lớn hơn giờ bắt đầu.";
-            return false;
-        }
-
-        // Nếu hợp lệ, hiển thị thông báo đúng
-        thoiGianHoatDongInput.style.border = "2px solid green";
-        errorElement.style.display = "none";
+        errorMessage.style.display = "none";
+        tenSanInput.style.border = "2px solid green";
         return true;
     }
 
-    // Gán sự kiện khi rời khỏi ô nhập thời gian hoạt động
-    thoiGianHoatDongInput.addEventListener("blur", validateThoiGianHoatDong);
+    // Hàm kiểm tra thời gian hợp lệ
+    function validateTime() {
+        const gioMoCua = gioMoCuaInput.value;
+        const gioDongCua = gioDongCuaInput.value;
+
+        if (!gioMoCua || !gioDongCua) {
+            alert("Vui lòng nhập đầy đủ thời gian mở và đóng cửa.");
+            return false;
+        }
+
+        const thoiGianMo = new Date(`1970-01-01T${gioMoCua}:00`);
+        const thoiGianDong = new Date(`1970-01-01T${gioDongCua}:00`);
+
+        if (thoiGianMo >= thoiGianDong) {
+            alert("Giờ mở cửa phải nhỏ hơn giờ đóng cửa!");
+            return false;
+        }
+        return true;
+    }
 
     // Gán sự kiện khi rời khỏi ô nhập tên sân
     tenSanInput.addEventListener("blur", validateTenSan);
 
-    // Gán sự kiện onchange cho loại sân
-    loaiSanSelect.addEventListener("change", updatePrice);
+    // Xử lý sự kiện submit form
+    form.addEventListener("submit", function (event) {
+        // Kiểm tra các trường nhập
+        const isTenSanValid = validateTenSan();
+        const isTimeValid = validateTime();
 
-    // Xử lý khi submit form
-   
+        if (!isTenSanValid || !isTimeValid) {
+            event.preventDefault(); // Ngăn form submit nếu không hợp lệ
+        }
+    });
 });
+
 
         
 

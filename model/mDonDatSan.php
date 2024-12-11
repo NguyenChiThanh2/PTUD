@@ -277,14 +277,31 @@ class mDonDatSan {
     }
     
     
-    public function deletedatsan($maDonDatSan) {
-        $p = new mKetNoi();
-        $truyvan = "DELETE FROM dondatsan1 WHERE MaDonDatSan = $maDonDatSan"; // Câu truy vấn SQL
+    public function updateTrangThaiDatSan($maDonDatSan, $trangThai) {
+        $p = new mKetNoi(); // Tạo đối tượng kết nối
         $con = $p->moKetNoi(); // Mở kết nối
-        $kq = mysqli_query($con, $truyvan); // Thực hiện truy vấn
-        $p->dongKetNoi($con); // Đóng kết nối
+        
+        // Cập nhật trạng thái trong bảng dondatsan1
+        $truyVanCapNhat = "UPDATE dondatsan1 SET TrangThai = ? WHERE MaDonDatSan = ?"; 
+        $stmt = mysqli_prepare($con, $truyVanCapNhat); // Chuẩn bị câu truy vấn
+        
+        if ($stmt === false) {
+            return false;
+        }
+        
+        // Liên kết tham số với câu truy vấn
+        mysqli_stmt_bind_param($stmt, "si", $trangThai, $maDonDatSan);
+        
+        // Thực thi câu truy vấn
+        $kq = mysqli_stmt_execute($stmt);
+        
+        // Đóng statement và kết nối
+        mysqli_stmt_close($stmt);
+        $p->dongKetNoi($con);
+        
         return $kq; // Trả về kết quả (true/false)
     }
+    
 
     
     public function GetDonDatSanById($maDonDatSan) {

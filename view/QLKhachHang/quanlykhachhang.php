@@ -44,10 +44,11 @@ if ($kq) {
         echo "<td>" . htmlspecialchars(($r["GioiTinh"] == 1 ? "Nam" : "Nữ")) . "</td>";
         
         $maKhachHang = htmlspecialchars($r['MaKhachHang']); // Bảo vệ dữ liệu trong URL
-        echo "<td>
-                <a href='?action=updateKhachHang&MaKhachHang=$maKhachHang' class='edit-button'>Sửa</a>";
+       
         
         if (isset($_SESSION['MaQuanTri'])) {
+            echo "<td>
+            <a href='?action=updateKhachHang&MaKhachHang=$maKhachHang' class='edit-button'>Sửa</a>";
             echo " 
                 <a href='?action=deleteKhachHang&MaKhachHang=$maKhachHang' class='delete-button' onclick='return confirm(\"Bạn chắc chắn muốn xóa khách hàng này?\")'>Xóa</a>";
         }

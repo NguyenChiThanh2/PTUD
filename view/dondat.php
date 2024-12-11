@@ -36,20 +36,29 @@ if ($kq && mysqli_num_rows($kq) > 0) {
         echo "<td>".$r["ThoiGianBatDau"]."</td>";
         echo "<td>".$r["ThoiGianKetThuc"]."</td>";
         echo "<td>".number_format($r["TongTien"], 2, '.', ',')."</td>";
-
         echo "<td>".$r["TrangThai"]."</td>";
-        echo "<td>
-            <form action='#' method = 'post'>
-                <a class='edit-button' href='?action=editDon&id=" . $r["MaDonDatSan"] . "'>Sửa</a>
-            </form>
-            
-            <form method='post' style='display: inline-block;' class='delete-form'>
-                <input type='hidden' name='id' value='".$r["MaDonDatSan"]."'>
-                <button type='submit' name='delete' class='delete-button'>Hủy</button>
-            </form>";
-        if ($r["TrangThai"] != "Đã đặt") {
-            echo "<a class='indon-button' href='?printDon=".$r["MaDonDatSan"]."'>Duyệt</a>";
+        echo "<td>";
+
+        // Chỉ hiển thị nút "Sửa" và "Duyệt" nếu trạng thái không phải là "Đã hủy"
+        if ($r["TrangThai"] != "Đã hủy đơn") {
+            echo "<form action='#' method='post'>
+                    <a class='edit-button' href='?action=editDon&id=" . $r["MaDonDatSan"] . "'>Sửa</a>
+                  </form>";
+
+            // Nút "Duyệt" chỉ hiển thị khi trạng thái không phải là "Đã đặt"
+            if ($r["TrangThai"] != "Đã đặt") {
+                echo "<a class='indon-button' href='?printDon=".$r["MaDonDatSan"]."'>Duyệt</a>";
+            }
         }
+
+        // Chỉ hiển thị nút "Hủy" nếu trạng thái không phải là "Đã hủy"
+        if ($r["TrangThai"] != "Đã hủy đơn") {
+            echo "<form method='post' style='display: inline-block;' class='delete-form'>
+                    <input type='hidden' name='id' value='".$r["MaDonDatSan"]."'>
+                    <button type='submit' name='delete' class='delete-button'>Hủy</button>
+                  </form>";
+        }
+
         echo "</td></tr>";
     }
     echo "</table>";
@@ -57,16 +66,17 @@ if ($kq && mysqli_num_rows($kq) > 0) {
     echo "<p>Không có đơn đặt sân nào!</p>";
 }
 
-// Xử lý xóa đơn đặt sân
+// Xử lý xóa đơn đặt sân (cập nhật trạng thái thành "Đã hủy")
 if (isset($_POST["delete"])) {
     $maDonDatSan = $_POST["id"]; // Lấy giá trị id từ form
-    $kq = $p->deletedatsan($maDonDatSan); // Gọi hàm delete từ controller
+    $trangThai = "Đã hủy đơn"; // Trạng thái mới
+    $kq = $p->updateTrangThaiDatSan($maDonDatSan, $trangThai); // Gọi hàm cập nhật trạng thái
     if ($kq) {
-        echo "<script>alert('Đơn đặt sân đã được xóa thành công!');</script>";
+        echo "<script>alert('Đơn đặt sân đã được chuyển sang trạng thái Đã hủy!');</script>";
         header("Location: ?dondat");
         exit();
     } else {
-        echo "<script>alert('Không thể xóa đơn đặt sân. Vui lòng thử lại!');</script>";
+        echo "<script>alert('Không thể cập nhật trạng thái đơn đặt sân. Vui lòng thử lại!');</script>";
     }
 }
 ?>

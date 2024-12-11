@@ -135,7 +135,7 @@ include_once(__DIR__ . "/../model/mSan.php");
 
         public function updateSanBong($maSanBong, $tenSanBong, $loaiSan, $moTaSan, $thoiGianHoatDong, $maNhanVien, $anhSan, $macoso) {
             // Kiểm tra dữ liệu đầu vào
-            if (empty($maSanBong) || empty($tenSanBong) || empty($loaiSan) || empty($moTaSan) || empty($thoiGianHoatDong) || empty($maNhanVien) || empty($macoso)) {
+            if (empty($maSanBong) || empty($tenSanBong) || empty($loaiSan) ||  empty($thoiGianHoatDong) || empty($maNhanVien) || empty($macoso)) {
                 echo "<script>alert('Dữ liệu không đầy đủ!');</script>";
                 return false;
             }

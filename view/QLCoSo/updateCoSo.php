@@ -63,7 +63,7 @@ if (isset($_POST['btnUpdateCoSo'])) {
     $DiaChi = $_POST['DiaChi'] ?? '';
     $moTa = $_POST['MoTa'] ?? '';
 
-    if (!empty($tenCoSo) && !empty($DiaChi) && !empty($moTa)) {
+    if (!empty($tenCoSo) && !empty($DiaChi)) {
         $kq = $pcs->updateCoSo($maCoSo, $tenCoSo, $DiaChi, $moTa, $maChuSan);
         if ($kq) {
             echo "<script>alert('Cập nhật cơ sở thành công!')</script>";
