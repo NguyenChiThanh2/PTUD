@@ -187,6 +187,8 @@ article p {
                 include_once("View/dondat.php");         
             }elseif (isset($_REQUEST["action"]) && $_REQUEST["action"] == "editDon"){
                 include_once("View/editdon.php");          
+            }elseif (isset($_REQUEST["chitietdondat"])){
+                include_once("View/chitietdondat.php");  
             }else {
             echo "<h2>Chào Mừng Đến Với Trang Quản Lý</h2>";
             }

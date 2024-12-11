@@ -1,24 +1,44 @@
 <?php
-
 include_once("Controller/cDonDatSan.php");
+include_once("Controller/cSan.php");
 
+$psan = new cSan();
 $controller = new cDonDatSan();
 
+// Fetch booking details if 'id' is provided
 if (isset($_GET["id"])) {
-    $maDonDatSan = $_GET["id"];
-    $donDatSan = mysqli_fetch_assoc($controller->GetDonDatSanById($maDonDatSan)); 
+    $maDonDatSan = intval($_GET["id"]); // Sanitize input
+    $donDatSan = mysqli_fetch_assoc($controller->GetDonDatSanById($maDonDatSan));
 }
 
 // Handle form submission
-if (isset($_POST["btnSave"])) {
-    $maDonDatSan = $_POST["maDonDatSan"];
-    $maSanBong = $_POST['maSan'];
-    $maKhachHang = $_POST['maKhach'];
-    $ngayNhanSan = $_POST["ngayDat"];
-    $gioBatDau = $_POST["gioBatDau"];
-    $gioKetThuc = $_POST["gioKetThuc"];
-    $trangThai = $_POST["trangThai"];
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["btnSave"])) {
+    $maDonDatSan = intval($_POST["maDonDatSan"]);
+    $maSanBong = intval($_POST['maSan']);
+    $maKhachHang = intval($_POST['maKhach']);
+    $ngayNhanSan = htmlspecialchars($_POST["ngayDat"]);
+    $gioBatDau = htmlspecialchars($_POST["gioBatDau"]);
+    $gioKetThuc = htmlspecialchars($_POST["gioKetThuc"]);
+    $trangThai = htmlspecialchars($_POST["trangThai"]);
     $tongTien = str_replace(" VNĐ", "", str_replace(",", "", $_POST["tongTien"]));
+    $tongTien = floatval($tongTien);
+
+    // Validate and process working hours
+    $thoigian = mysqli_fetch_assoc($psan->Get1San($maSanBong));
+    $thoiGianHoatDong = $thoigian['ThoiGianHoatDong'];
+    $catThoiGianHoatDong = explode(" - ", $thoiGianHoatDong);
+    $gioMoCua = trim($catThoiGianHoatDong[0]);
+    $gioDongCua = trim($catThoiGianHoatDong[1]);
+
+
+
+    if (strtotime($gioBatDau) < strtotime($gioMoCua) || strtotime($gioKetThuc) > strtotime($gioDongCua)) {
+        echo "<script>
+                alert('Thời gian đặt sân phải nằm trong khung giờ hoạt động: $gioMoCua - $gioDongCua!');
+                window.history.back();
+              </script>";
+        exit();
+    }
 
     if (strtotime($gioBatDau) >= strtotime($gioKetThuc)) {
         echo "<script>
@@ -28,17 +48,28 @@ if (isset($_POST["btnSave"])) {
         exit();
     }
 
-    $result = $controller->UpDonDatSan($maDonDatSan, $maSanBong, $maKhachHang, $ngayNhanSan, $gioBatDau, $gioKetThuc, $tongTien, $_POST['tenKH']);
+    // Update booking
+    $result = $controller->UpDonDatSan(
+        $maDonDatSan,
+        $maSanBong,
+        $maKhachHang,
+        $ngayNhanSan,
+        $gioBatDau,
+        $gioKetThuc,
+        $tongTien,
+        htmlspecialchars($_POST['tenKH'])
+    );
 
     if ($result) {
         echo "<script>
                 alert('Sửa đơn đặt sân thành công!');
-                window.location.href = 'admin.php?dondat'; 
+                window.location.href = 'admin.php?dondat';
               </script>";
+              
     } else {
         echo "<script>
                 alert('Có lỗi xảy ra. Vui lòng thử lại.');
-                window.history.back(); 
+                window.history.back();
               </script>";
     }
 }
@@ -51,7 +82,7 @@ if (isset($_POST["btnSave"])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sửa Đơn Đặt Sân</title>
     <style>
-        /* CSS remains the same */
+        /* Your provided CSS styles */
     </style>
 </head>
 <body>
@@ -64,9 +95,7 @@ if (isset($_POST["btnSave"])) {
         <label for="maSan">Mã sân:</label>
         <select id="maSan" name="maSan" required>
         <?php
-            include_once("Controller/cSan.php");
-            $pnv = new cSan();
-            $kqnv = $pnv->getAllSanBongByMaChuSan($_SESSION['MaChuSan']);
+            $kqnv = $psan->getAllSanBongByMaChuSan($_SESSION['MaChuSan']);
             
             if ($kqnv) {
                 while ($row = mysqli_fetch_assoc($kqnv)) {
@@ -80,16 +109,16 @@ if (isset($_POST["btnSave"])) {
         </select>
 
         <label for="tenKH">Tên khách hàng:</label>
-        <input type="text" id="tenKH" name="tenKH" value="<?= $donDatSan['TenKhachHang'] ?>" required>
+        <input type="text" id="tenKH" name="tenKH" value="<?= htmlspecialchars($donDatSan['TenKhachHang']) ?>" required>
 
         <label for="ngayDat">Ngày đặt:</label>
-        <input type="date" id="ngayDat" name="ngayDat" value="<?= $donDatSan['NgayNhanSan'] ?>" required>
+        <input type="date" id="ngayDat" name="ngayDat" value="<?= htmlspecialchars($donDatSan['NgayNhanSan']) ?>" required>
 
         <label for="gioBatDau">Giờ bắt đầu:</label>
-        <input type="time" id="gioBatDau" name="gioBatDau" value="<?= $donDatSan['ThoiGianBatDau'] ?>" required>
+        <input type="time" id="gioBatDau" name="gioBatDau" value="<?= htmlspecialchars($donDatSan['ThoiGianBatDau']) ?>" required>
 
         <label for="gioKetThuc">Giờ kết thúc:</label>
-        <input type="time" id="gioKetThuc" name="gioKetThuc" value="<?= $donDatSan['ThoiGianKetThuc'] ?>" required>
+        <input type="time" id="gioKetThuc" name="gioKetThuc" value="<?= htmlspecialchars($donDatSan['ThoiGianKetThuc']) ?>" required>
 
         <label for="trangThai">Trạng thái:</label>
         <select id="trangThai" name="trangThai" required>
@@ -144,6 +173,7 @@ if (isset($_POST["btnSave"])) {
     </script>
 </body>
 </html>
+
 
 
 
@@ -244,4 +274,4 @@ p {
         font-size: 16px;
     }
 }
-    </style>
+    </style>    

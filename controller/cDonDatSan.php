@@ -133,6 +133,15 @@ public function UpDonDatSan($maDonDatSan, $maSanBong, $maKhachHang, $ngayNhanSan
 }
 
     
+public function getALLChiTietDonByMaDonDatSan($maDonDatSan) {
+    $p = new mDonDatSan();
+    $kq = $p->selectALLChiTietDonByMaDonDatSan($maDonDatSan);
+    if($kq){
+        return $kq;
+    } else {
+        echo "Không có dữ liệu!";
+    }
+}
 
     
 }

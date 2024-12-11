@@ -14,11 +14,10 @@ if (isset($_REQUEST["printDon"])) {
         $emailKhachHang = $thongTinDon['Email'];
         $tenKH = $thongTinDon['TenKhachHang'];
         $tenSan = $thongTinDon['TenSanBong'];
-        $ngayDat = date("d-m-Y", strtotime($thongTinDon['NgayDat']));
-        $gioBatDau = $thongTinDon['GioBatDau'];
-        $gioKetThuc = $thongTinDon['GioKetThuc'];
-        $tongTien = number_format($thongTinDon['TongTien'], 0, ',', '.') . " VND";
-
+        $ngayDat = date("d-m-Y", strtotime($thongTinDon['NgayNhanSan']));
+        $gioBatDau = $thongTinDon['ThoiGianBatDau'];
+        $gioKetThuc = $thongTinDon['ThoiGianKetThuc'];
+        $tongTien = number_format($thongTinDon['TongTien'], 0, ',', '.') ;
         // Tạo nội dung email
         $mail = new PHPMailer\PHPMailer\PHPMailer();
         $mail->IsSMTP();

@@ -252,8 +252,8 @@ class mDonDatSan {
         $con = $p->moKetNoi();
     
         // Truy vấn lấy thông tin chi tiết của đơn đặt sân
-        $sqlThongTin = "SELECT kh.Email, kh.TenKhachHang, sb.TenSanBong, d.NgayDat, d.GioBatDau, d.GioKetThuc, d.TongTien 
-                        FROM dondatsan1 d
+        $sqlThongTin = "SELECT kh.Email, kh.TenKhachHang, sb.TenSanBong, d.NgayDat, d.GioBatDau, d.GioKetThuc, d.TongTien ,ct.NgayNhanSan ,ct.ThoiGianBatDau , ct.ThoiGianKetThuc
+                        FROM dondatsan1 d join chitietdondatsan ct on ct.MaDonDatSan = d.MaDonDatSan
                         INNER JOIN khachhang kh ON d.MaKhachHang = kh.MaKhachHang
                         INNER JOIN sanbong sb ON d.MaSanBong = sb.MaSanBong
                         WHERE d.MaDonDatSan = '$maDonDatSan'";
@@ -380,6 +380,34 @@ class mDonDatSan {
         // Đóng kết nối và trả về kết quả
         $p->dongKetNoi($con);
         return true;
+    }
+
+
+    public function selectALLChiTietDonByMaDonDatSan($maDonDatSan) {
+        $p = new mKetNoi();
+        $con = $p->moKetNoi();
+        // Sửa lại câu truy vấn để lấy chi tiết đơn từ bảng dondatsan1
+        $sql = "SELECT dondatsan1.*, 
+                        sanbong.TenSanBong, 
+                        khachhang.TenKhachHang, 
+                        khachhang.SDT, 
+                        khachhang.Email, 
+                        coso.DiaChi,
+                        chitietdondatsan.NgayNhanSan,
+                        chitietdondatsan.ThoiGianBatDau,
+                        chitietdondatsan.ThoiGianKetThuc
+                FROM dondatsan1
+                JOIN sanbong ON dondatsan1.MaSanBong = sanbong.MaSanBong 
+                JOIN khachhang ON dondatsan1.MaKhachHang = khachhang.MaKhachHang
+                JOIN coso ON sanbong.MaCoSo = coso.MaCoSo
+                JOIN chitietdondatsan ON dondatsan1.MaDonDatSan = chitietdondatsan.MaDonDatSan
+                WHERE dondatsan1.MaDonDatSan = $maDonDatSan";
+        $kq = mysqli_query($con, $sql);
+        if (!$kq) {
+            die("Query failed: " . mysqli_error($con));
+        }
+        $p->dongKetNoi($con);
+        return $kq; 
     }
     
     
