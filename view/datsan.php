@@ -2,6 +2,13 @@
 <?php
 session_start();
 ob_start();
+
+if (!isset($_SESSION["dangnhap"]) || !isset($_SESSION["loaiNguoiDung"])) {
+    echo '<script>alert("Bạn không có quyền truy cập!");</script>';
+    header("refresh: 0; url=../index.php");
+    // exit();
+}
+
 $masan = isset($_REQUEST["idSan"]) ? $_REQUEST["idSan"] : null;
 $maloaisan = isset($_REQUEST["mals"]) ? $_REQUEST["mals"] : null;
 

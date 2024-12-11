@@ -93,7 +93,7 @@
                 </div>
                 <div class="mb-3">
                     <label for="sdt" class="form-label">Số điện thoại</label>
-                    <input type="text" class="form-control" id="sdt" placeholder="Nhập Số điện thoại" name="sodienthoai" required>
+                    <input type="tel" class="form-control" id="sdt" placeholder="Nhập Số điện thoại" name="sodienthoai" required>
                 </div>
                 <div class="mb-3">
                     <label for="diachi" class="form-label">Địa chỉ</label>

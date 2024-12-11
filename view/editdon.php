@@ -2,6 +2,7 @@
 include_once("Controller/cDonDatSan.php");
 include_once("Controller/cSan.php");
 
+
 $psan = new cSan();
 $controller = new cDonDatSan();
 
@@ -160,7 +161,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["btnSave"])) {
                     thoiGianBatDau.setMinutes(thoiGianBatDau.getMinutes() + 1);
                 }
 
-                document.getElementById("tongTien").value = Math.round(tongTien).toLocaleString('vi-VN') + ' VNĐ';
+                document.getElementById("tongTien").value = Math.round(tongTien).toLocaleString() + ' VNĐ';
             }
         }
 

@@ -10,6 +10,7 @@ session_start();
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tìm kiếm</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="css/style.css">
     <style>
         body {
@@ -76,22 +77,37 @@ session_start();
             <ul id="menu">
             <li class="item active"><a href="trangchu.php" id="trangchu">Trang Chủ</a></li>
                 <li class="item"><a href="San.php">Danh sách sân</a></li>
-                <li class="item"><a href="admin.php">Quản lý</a></li>
+                <?php
+                    if(isset($_SESSION['MaNhanVien']) || isset($_SESSION['MaChuSan']) || isset($_SESSION['MaQuanTri']))
+                    echo '<li class="item"><a href="admin.php">Quản lý</a></li>';
+                ?>
+                <!-- <li class="item"><a href="admin.php">Quản lý</a></li> -->
                 <li class="item"><a href="timkiem.php">Tìm Kiếm</a></li>
             </ul>
             <div id="actions">
-                <button class="btn-register"><a style="color: white;" href="dangki.php">Đăng ký</a></button>
-                <?php
+            <?php
                  if(isset($_SESSION["dangnhap"])){
+                    // var_dump($_SESSION["hoten"]);
+                    if( isset($_SESSION['loaiNguoiDung']) && $_SESSION['loaiNguoiDung'] == 'khachhang'){
+                        echo '<button class="btn-login"><a style="color: white;" href="?lichsudatsan">Danh sách đơn đặt sân</a></button>';
+                    }
+                    echo '<button class="btn-login"><a style="color: white;" href="view/userDetail.php"><i style="font-size:24px" class="fa">&#xf007;</i> '.$_SESSION["hoten"].'</a></button>';
                     echo '<button class="btn-login"><a style="color: white;" href="view/dangxuat.php">Đăng xuất</a></button>';
                  }else{
+                    echo '<button class="btn-register"><a style="color: white;" href="view/dangki.php">Đăng ký</a></button>';
                     echo '<button class="btn-login"><a style="color: white;" href="view/dangnhap.php">Đăng nhập</a></button>';
                  }
             ?>
             </div>
         </div>
 
-        <div id="search-bar">
+        <?php
+    if (isset($_REQUEST["lichsudatsan"])) {
+        if (isset($_SESSION['loaiNguoiDung']) && $_SESSION['loaiNguoiDung'] == 'khachhang') {
+            include_once("View/listDonDatSan.php");
+        }
+    }else{
+        echo '<div id="search-bar">
             <div class="search-container">
                 <form action="#" method="get">
                     <input type="text" name="txtTuKhoa" placeholder="Tên sân">
@@ -99,7 +115,11 @@ session_start();
                     <input type="submit" class="search-btn" name="btnTim" value="Tìm">
                 </form>
             </div>
-        </div>
+        </div>';
+    }
+     ?>
+
+        
 
         <div class="search-container">
         <?php
@@ -140,7 +160,7 @@ session_start();
             } elseif (isset($_REQUEST['btnTim'])) {
                 echo "<p>Không tìm thấy sân bóng phù hợp với từ khóa.</p>";
             } else {
-                echo "<p>Vui lòng nhập từ khóa và nhấn tìm kiếm.</p>";
+                // echo "<p>Vui lòng nhập từ khóa và nhấn tìm kiếm.</p>";
             }
             ?>
 

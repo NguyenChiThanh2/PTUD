@@ -22,6 +22,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quản lý</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="css/style.css">
     <style>
             /* CSS cho phần session */
@@ -102,16 +103,22 @@ article p {
             <ul>
                 <li class="item active"><a href="trangchu.php" id="trangchu">Trang Chủ</a></li>
                 <li class="item"><a href="San.php">Danh sách sân</a></li>
-                <li class="item"><a href="admin.php">Quản lý</a></li>
+                <?php
+                    if(isset($_SESSION['MaNhanVien']) || isset($_SESSION['MaChuSan']) || isset($_SESSION['MaQuanTri']))
+                    echo '<li class="item"><a href="admin.php">Quản lý</a></li>';
+                ?>
                 <li class="item"><a href="timkiem.php">Tìm Kiếm</a></li>
             </ul>
         </nav>
         <div id="actions">
-            <button class="btn-register"><a style="color: white;" href="./view/dangki.php">Đăng ký</a></button>
-            <?php
+        <?php
                  if(isset($_SESSION["dangnhap"])){
+                    // var_dump($_SESSION["hoten"]);
+
+                    echo '<button class="btn-login"><a style="color: white;" href="view/userDetail.php"><i style="font-size:24px" class="fa">&#xf007;</i> '.$_SESSION["hoten"].'</a></button>';
                     echo '<button class="btn-login"><a style="color: white;" href="view/dangxuat.php">Đăng xuất</a></button>';
                  }else{
+                    echo '<button class="btn-register"><a style="color: white;" href="view/dangki.php">Đăng ký</a></button>';
                     echo '<button class="btn-login"><a style="color: white;" href="view/dangnhap.php">Đăng nhập</a></button>';
                  }
             ?>

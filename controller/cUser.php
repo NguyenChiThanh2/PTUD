@@ -73,6 +73,17 @@ class ControllerUser {
                 return $kq;
         }
     }
+
+    public function getAUserByEmail2($email){
+        $p = new ModelUser();
+        $kq = $p->selectAUserByEmail2($email);
+        if(!$kq){
+            echo "No data !";
+        }else{
+            if($kq->num_rows > 0)
+                return $kq;
+        }
+    }
     
 }
 ?>
