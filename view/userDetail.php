@@ -192,7 +192,7 @@ $kq = mysqli_fetch_assoc($p->getAUserByEmail2($_SESSION['email']));
                  if(isset($_SESSION["dangnhap"])){
                     // var_dump($_SESSION["hoten"]);
 
-                    echo '<button class="btn-login"><a style="color: white;" href="view/userDetail.php"><i style="font-size:24px" class="fa">&#xf007;</i> '.$_SESSION["hoten"].'</a></button>';
+                    echo '<button class="btn-login"><a style="color: white;" href="userDetail.php"><i style="font-size:24px" class="fa">&#xf007;</i> '.$_SESSION["hoten"].'</a></button>';
                     echo '<button class="btn-login"><a style="color: white;" href="../view/dangxuat.php">Đăng xuất</a></button>';
                  }else{
                     echo '<button class="btn-register"><a style="color: white;" href="view/dangki.php">Đăng ký</a></button>';

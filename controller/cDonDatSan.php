@@ -54,24 +54,25 @@ class cDonDatSan {
     }
     
 
-    public function getKiemTraTrungGio($ngayDat) {
+    public function getKiemTraTrungGio($ngayNhanSan) {
         // Tạo đối tượng model để gọi phương thức kiểm tra trùng giờ
         $model = new mDonDatSan();
-        $kq = $model->KiemTraTrungGio($ngayDat);
+        $kq = $model->KiemTraTrungGio($ngayNhanSan);
     
-        if ($kq) {
-            if ($kq->num_rows > 0) {
-                // Nếu có đơn trùng giờ, trả về kết quả
-                return $kq;
-            } else {
-                // Nếu không có đơn trùng giờ
-                return 0;
-            }
-        } else {
-            // Trường hợp có lỗi trong việc truy vấn
-            return false;
+        // Kiểm tra nếu truy vấn lỗi
+        if ($kq === false) {
+            return false; // Truy vấn lỗi
         }
+    
+        // Kiểm tra nếu không có kết quả
+        if ($kq->num_rows === 0) {
+            return null; // Không có đơn trùng giờ
+        }
+    
+        // Trường hợp có kết quả
+        return $kq;
     }
+    
 
     public function getupdateTrangThaiDon($madon){
         // Tạo đối tượng model để gọi phương thức kiểm tra trùng giờ

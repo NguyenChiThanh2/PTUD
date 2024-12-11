@@ -232,6 +232,12 @@ if (isset($_POST['btnThemSan'])) {
     $maNhanVien = $_POST['MaNhanVien'];
     $maCoSo = $_POST['MaCoSo'];
 
+    $ktraten  = $psb->getAllSanBongByTenSanBong($tenSanBong);
+    if ($ktraten === 1) {
+        echo "<script>alert('Tên sân đã tồn tại!');</script>";
+        echo '<script>window.history.back();</script>';
+        exit();  // Dừng lại ngay sau khi tên sân đã tồn tại
+    }
     // Xử lý file ảnh
     if (isset($_FILES['AnhSan']) && $_FILES['AnhSan']['error'] == UPLOAD_ERR_OK) {
         $targetDir = "img/SanBong/"; // Thư mục lưu ảnh

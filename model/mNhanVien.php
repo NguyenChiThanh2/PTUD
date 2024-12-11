@@ -8,7 +8,7 @@
                   $kq = $con->query($sql);
                   $p->dongKetNoi($con);
                   return $kq;
-              }
+            }
               public function selectNhanVienByMaChuSan($maChuSan) {
                   $p = new mKetNoi();
                   $con = $p->moKetNoi();
@@ -17,6 +17,7 @@
                   $p->dongKetNoi($con);
                   return $kq; 
                 }
+            
       }
 
       

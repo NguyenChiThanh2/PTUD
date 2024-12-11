@@ -218,12 +218,17 @@ class mDonDatSan {
         return $kq; // Trả về kết quả
     }
 
-    public function KiemTraTrungGio($ngayDat) {
+    public function KiemTraTrungGio($ngayNhanSan) {
         $p = new mKetNoi(); // Kết nối cơ sở dữ liệu
         $con = $p->moKetNoi(); // Mở kết nối
         // Truy vấn kiểm tra trùng giờ đặt sân
-        $sql = "SELECT * FROM dondatsan1 
-                WHERE NgayDat = '$ngayDat'";
+        $sql = "SELECT dd.MaKhachHang, dd.TrangThai, 
+        dd.MaSanBong, ct.ThoiGianBatDau, 
+        ct.ThoiGianKetThuc FROM dondatsan1 dd 
+        JOIN chitietdondatsan ct 
+        ON dd.MaDonDatSan = ct.MaDonDatSan WHERE ct.NgayNhanSan = '$ngayNhanSan';
+                ";
+
         $kq = $con->query($sql); // Thực thi truy vấn
         $p->dongKetNoi($con); // Đóng kết nối
         if ($kq) {

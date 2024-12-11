@@ -274,24 +274,34 @@ if (isset($_POST['btnDat'])) {
     }
 
     // Kiểm tra trùng giờ
+  
     $kiemtratrung = $p->getKiemTraTrungGio($ngayDat);
-    $isTrung = false;
 
+    $isTrung = false; // Biến đánh dấu nếu có trùng
     if ($kiemtratrung) {
+        
         while ($r = $kiemtratrung->fetch_assoc()) {
-            $rgiobatdau = $r['GioBatDau'];
-            $rgioketthuc = $r['GioKetThuc'];
-            $rtrangthai = $r['TrangThai'];
-
-            if ((strtotime($gioBatDau) < strtotime($rgioketthuc) && strtotime($gioKetThuc) > strtotime($rgiobatdau)) && $rtrangthai === "Đã đặt") {
+            $thoiGianBatDauDaDat = strtotime($r['ThoiGianBatDau']);
+            $thoiGianKetThucDaDat = strtotime($r['ThoiGianKetThuc']);
+            $trangThai = $r['TrangThai'];
+            $maSanBong = $r['MaSanBong'];
+    
+            // Kiểm tra trùng giờ trên cùng một sân
+            if (
+                $maSanBong == $masan && 
+                $trangThai === "Đã đặt" &&
+                strtotime($gioBatDau) < $thoiGianKetThucDaDat && 
+                strtotime($gioKetThuc) > $thoiGianBatDauDaDat
+            ) {
                 $isTrung = true;
-                break;
+                break; // Thoát vòng lặp khi phát hiện trùng
             }
         }
-    }
-
-    if ($isTrung) {
-        echo "<p style='color: red; text-align: center;'>Khoảng thời gian đã có người đặt!</p>";
+    
+        if ($isTrung) {
+            echo "<p style='color: red; text-align: center;'>Khoảng thời gian đã có người đặt!</p>";
+            exit();
+        }
     } else {
         // Tính tổng tiền
         $giaSang = $bangGia[$maloaisan]['sang'];

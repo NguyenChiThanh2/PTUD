@@ -128,6 +128,37 @@
                 $p->dongKetNoi($con);
                 return $kq; 
               }
+
+              public function selectSanbongByTenSanBong($tenSanBong) {
+                // Mở kết nối cơ sở dữ liệu
+                $p = new mKetNoi();
+                $con = $p->moKetNoi();
+            
+                // Chuẩn bị câu lệnh SQL
+                $sql = "SELECT * FROM `sanbong` WHERE TenSanBong = ?";
+                
+                // Chuẩn bị câu lệnh SQL để tránh SQL Injection
+                if ($stmt = mysqli_prepare($con, $sql)) {
+                    // Liên kết tham số
+                    mysqli_stmt_bind_param($stmt, "s", $tenSanBong); // "s" chỉ loại dữ liệu string
+                    
+                    // Thực thi câu lệnh
+                    mysqli_stmt_execute($stmt);
+                    
+                    // Lấy kết quả
+                    $kq = mysqli_stmt_get_result($stmt);
+                    
+                    // Đóng câu lệnh đã chuẩn bị
+                    mysqli_stmt_close($stmt);
+                }
+            
+                // Đóng kết nối
+                $p->dongKetNoi($con);
+                
+                // Trả về kết quả
+                return $kq;
+            }
+            
               
             
             public function insertSanBong($tenSanBong, $thoiGianHoatDong, $moTa, $hinhAnh, $maNhanVien, $maLoaiSan, $maCoSo) {

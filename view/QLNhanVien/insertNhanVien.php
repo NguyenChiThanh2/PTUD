@@ -43,50 +43,52 @@
     </div>
 </form>
 
-<script>
-    // Regex cho từng loại kiểm tra
-    const nameRegex = /^[A-ZÀÁÃẠẢĂẲẰẮẴẶÂẦẪẬẨẤÈẺÉẼẸÊỂẾỀỆỄÌỈÍỊĨÒỎÓỌÕÔỔỐỒỘỖỞƠỚỜỢỠÙÚỦŨỤĐƯỨỪỮỰỬỲỴÝỶỸ][a-zàáãạảăẳằắẵặâầẫậẩấèẻéẽẹêểếềệễìỉíịĩòỏóọõôổốồộỗởơớờợỡùúủũụđưứừữựửỳỵýỷỹ]*(\s[A-ZÀÁÃẠẢĂẲẰẮẴẶÂẦẪẬẨẤÈẺÉẼẸÊỂẾỀỆỄÌỈÍỊĨÒỎÓỌÕÔỔỐỒỘỖỞƠỚỜỢỠÙÚỦŨỤĐƯỪỨỮỰỬỲỴÝỶỸ][a-zàáãạảăẳằắẵặâầẫậẩấèẻéẽẹêểếềệễìỉíịĩòỏóọõôổốồộỗởơớờợỡùúủũụđưứừữựửỳỵýỷỹ]*)*$/u;
-    const addressRegex = /^[a-zA-ZÀÁÃẠẢĂẲẰẮẴẶÂẦẪẬẨẤÈẺÉẼẸÊỂẾỀỆỄÌỈÍỊĨÒỎÓỌÕÔỔỐỒỘỖỞƠỚỜỢỠÙÚỨỦŨỤĐƯỪỮỰỬỲỴÝỶỸàáãạảăẳằắẵặâầẫậẩấèẻéẽẹêểếềệễìỉíịĩòỏóọõôổốồộỗởơớờợỡùúủũụđưứừữựửỳỵýỷỹ0-9\s,\/\.]+$/u;
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
-    const phoneRegex = /^(03|07|08|09)[0-9]{8}$/;
+    <script>
+        // Regex cho từng loại kiểm tra
+        const nameRegex = /^[A-ZÀÁÃẠẢĂẲẰẮẴẶÂẦẪẬẨẤÈẺÉẼẸÊỂẾỀỆỄÌỈÍỊĨÒỎÓỌÕÔỔỐỒỘỖỞƠỚỜỢỠÙÚỦŨỤĐƯỨỪỮỰỬỲỴÝỶỸ][a-zàáãạảăẳằắẵặâầẫậẩấèẻéẽẹêểếềệễìỉíịĩòỏóọõôổốồộỗởơớờợỡùúủũụđưứừữựửỳỵýỷỹ]*(\s[A-ZÀÁÃẠẢĂẲẰẮẴẶÂẦẪẬẨẤÈẺÉẼẸÊỂẾỀỆỄÌỈÍỊĨÒỎÓỌÕÔỔỐỒỘỖỞƠỚỜỢỠÙÚỦŨỤĐƯỪỨỮỰỬỲỴÝỶỸ][a-zàáãạảăẳằắẵặâầẫậẩấèẻéẽẹêểếềệễìỉíịĩòỏóọõôổốồộỗởơớờợỡùúủũụđưứừữựửỳỵýỷỹ]*)*$/u;
+        const addressRegex = /^[a-zA-ZÀÁÃẠẢĂẲẰẮẴẶÂẦẪẬẨẤÈẺÉẼẸÊỂẾỀỆỄÌỈÍỊĨÒỎÓỌÕÔỔỐỒỘỖỞƠỚỜỢỠÙÚỨỦŨỤĐƯỪỮỰỬỲỴÝỶỸàáãạảăẳằắẵặâầẫậẩấèẻéẽẹêểếềệễìỉíịĩòỏóọõôổốồộỗởơớờợỡùúủũụđưứừữựửỳỵýỷỹ0-9\s,\/\.]+$/u;
+        const emailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
+        const phoneRegex = /^(03|07|08|09)[0-9]{8}$/;
 
-    // Hàm kiểm tra dữ liệu
-    function validateField(input, regex, errorMessage) {
-        const value = input.value.trim(); // Loại bỏ khoảng trắng thừa
-        const errorElement = input.nextElementSibling;
+        // Hàm kiểm tra dữ liệu
+        function validateField(input, regex, errorMessage) {
+            const value = input.value.trim(); // Loại bỏ khoảng trắng thừa
+            const errorElement = input.nextElementSibling;
 
-        if (!regex.test(value)) {
-            input.style.border = "2px solid red"; // Viền đỏ
-            errorElement.style.display = "block"; // Hiển thị thông báo lỗi
-            errorElement.innerText = errorMessage;
-        } else {
-            input.style.border = "2px solid green"; // Viền xanh lá cây
-            errorElement.style.display = "none"; // Ẩn thông báo lỗi
+            if (!regex.test(value)) {
+                input.style.border = "2px solid red"; // Viền đỏ
+                errorElement.style.display = "block"; // Hiển thị thông báo lỗi
+                errorElement.innerText = errorMessage;
+            } else {
+                input.style.border = "2px solid green"; // Viền xanh lá cây
+                errorElement.style.display = "none"; // Ẩn thông báo lỗi
+            }
         }
-    }
 
-    // Gán sự kiện blur cho từng ô nhập liệu
-    document.getElementById("TenNV").addEventListener("blur", function () {
-        validateField(this, nameRegex, "Tên không hợp lệ! Tên phải viết hoa chữ cái đầu và không chứa ký tự đặc biệt.");
-    });
+        // Gán sự kiện blur cho từng ô nhập liệu
+        document.getElementById("TenNV").addEventListener("blur", function () {
+            validateField(this, nameRegex, "Tên không hợp lệ! Tên phải viết hoa chữ cái đầu và không chứa ký tự đặc biệt.");
+        });
 
-    document.getElementById("Email").addEventListener("blur", function () {
-        validateField(this, emailRegex, "Email không hợp lệ! Vui lòng nhập đúng định dạng xxx@gmail.com.");
-    });
+        document.getElementById("Email").addEventListener("blur", function () {
+            validateField(this, emailRegex, "Email không hợp lệ! Vui lòng nhập đúng định dạng xxx@gmail.com.");
+        });
 
-    document.getElementById("SDT").addEventListener("blur", function () {
-        validateField(this, phoneRegex, "Số điện thoại không hợp lệ! Vui lòng nhập 10 số với đầu số 03, 07, 08 hoặc 09.");
-    });
+        document.getElementById("SDT").addEventListener("blur", function () {
+            validateField(this, phoneRegex, "Số điện thoại không hợp lệ! Vui lòng nhập 10 số với đầu số 03, 07, 08 hoặc 09.");
+        });
 
-    document.getElementById("DiaChi").addEventListener("blur", function () {
-        validateField(this, addressRegex, "Địa chỉ không hợp lệ! Vui lòng nhập địa chỉ hợp lệ.");
-    });
-</script>
+        document.getElementById("DiaChi").addEventListener("blur", function () {
+            validateField(this, addressRegex, "Địa chỉ không hợp lệ! Vui lòng nhập địa chỉ hợp lệ.");
+        });
+    </script>
 
 <?php
     include_once("Controller/cChuSan.php");
     $p = new ControllerChuSan();
     if (isset($_REQUEST['btnThemNV'])) {
+
+        
         $kq = $p->insertNhanVien($_REQUEST['TenNV'], $_REQUEST['Email'], $_REQUEST['SDT'], $_REQUEST['DiaChi'], $_REQUEST['GioiTinh'], $_REQUEST['MatKhau'], $_SESSION['MaChuSan']);
         if ($kq) {
             echo "<script>alert('Thêm Nhân Viên thành công')</script>";
