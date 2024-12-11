@@ -87,11 +87,11 @@ include_once(__DIR__ . "/../model/mSan.php");
             }
         }
         
-        public function getAllSanBongByTenSanBong($tenSanBong) {
+        public function getAllSanBongByTenSanBong($tenSanBong,$maCoSo) {
             $p = new mSan();
             
             // Lấy kết quả từ phương thức selectSanbongByTenSanBong
-            $kq = $p->selectSanbongByTenSanBong($tenSanBong);
+            $kq = $p->selectSanbongByTenSanBong($tenSanBong,$maCoSo);
             
             // Kiểm tra xem có bản ghi nào trong kết quả không
             if ($kq && mysqli_num_rows($kq) > 0) {

@@ -63,6 +63,13 @@ if (isset($_POST['btnUpdateCoSo'])) {
     $DiaChi = $_POST['DiaChi'] ?? '';
     $moTa = $_POST['MoTa'] ?? '';
 
+    $ktraten  = $pcs->getallCoSoByTenAnDiaChi($tenCoSo,$DiaChi);
+    if ($ktraten === 1) {
+        echo "<script>alert('Cơ Sở này đã tồn tại!');</script>";
+        echo '<script>window.history.back();</script>';
+        exit();  // Dừng lại ngay sau khi tên sân đã tồn tại
+    }
+
     if (!empty($tenCoSo) && !empty($DiaChi)) {
         $kq = $pcs->updateCoSo($maCoSo, $tenCoSo, $DiaChi, $moTa, $maChuSan);
         if ($kq) {
@@ -73,6 +80,7 @@ if (isset($_POST['btnUpdateCoSo'])) {
         }
     } else {
         echo "<script>alert('Vui lòng điền đầy đủ thông tin!');</script>";
+
     }
 }
 ?>

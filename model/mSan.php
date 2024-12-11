@@ -129,18 +129,18 @@
                 return $kq; 
               }
 
-              public function selectSanbongByTenSanBong($tenSanBong) {
+              public function selectSanbongByTenSanBong($tenSanBong, $maCoSo) {
                 // Mở kết nối cơ sở dữ liệu
                 $p = new mKetNoi();
                 $con = $p->moKetNoi();
             
                 // Chuẩn bị câu lệnh SQL
-                $sql = "SELECT * FROM `sanbong` WHERE TenSanBong = ?";
+                $sql = "SELECT * FROM `sanbong` WHERE TenSanBong = ? AND MaCoSo = ?";
                 
                 // Chuẩn bị câu lệnh SQL để tránh SQL Injection
                 if ($stmt = mysqli_prepare($con, $sql)) {
                     // Liên kết tham số
-                    mysqli_stmt_bind_param($stmt, "s", $tenSanBong); // "s" chỉ loại dữ liệu string
+                    mysqli_stmt_bind_param($stmt, "ss", $tenSanBong, $maCoSo); // "ss" chỉ loại dữ liệu string cho hai tham số
                     
                     // Thực thi câu lệnh
                     mysqli_stmt_execute($stmt);
@@ -150,6 +150,9 @@
                     
                     // Đóng câu lệnh đã chuẩn bị
                     mysqli_stmt_close($stmt);
+                } else {
+                    // Trường hợp lỗi chuẩn bị câu lệnh
+                    $kq = false;
                 }
             
                 // Đóng kết nối
@@ -158,6 +161,7 @@
                 // Trả về kết quả
                 return $kq;
             }
+            
             
               
             

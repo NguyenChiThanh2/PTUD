@@ -244,9 +244,6 @@ if (isset($_POST['btnDat'])) {
     $gioBatDau = $_POST['txtGioBatDau'];
     $gioKetThuc = $_POST['txtGioKetThuc'];
 
-    // In ra giá trị ngày để kiểm tra
-    
-
     // Kiểm tra nếu mã loại sân không hợp lệ
     if (!isset($bangGia[$maloaisan])) {
         echo "<p style='color: red; text-align: center;'>Mã loại sân không hợp lệ!</p>";
@@ -255,8 +252,8 @@ if (isset($_POST['btnDat'])) {
 
     // Kiểm tra ngày đặt không được lùi lại
     $ngayHienTai = date("Y-m-d");
-    if (strtotime($ngayDat) <= strtotime($ngayHienTai)) {
-        echo "<p style='color: red; text-align: center;'> Vui lòng chọn ngày trong tương lai!<br>Hoặc ngày hiện tại!</p>";
+    if (strtotime($ngayDat) < strtotime($ngayHienTai)) {
+        echo "<p style='color: red; text-align: center;'>Vui lòng chọn ngày trong tương lai!</p>";
         exit();
     }
 
@@ -266,89 +263,88 @@ if (isset($_POST['btnDat'])) {
         exit();
     }
 
-    // Kiểm tra giờ đặt sân có nằm trong khoảng từ 6 giờ đến 16 giờ và từ 16 giờ đến 23 giờ không
+    // Kiểm tra giờ đặt sân có nằm trong khoảng từ 6 giờ đến 23 giờ không
     $gioBatDauInt = (int)date("H", strtotime($gioBatDau));
-    if (!($gioBatDauInt >= 6 && $gioBatDauInt < 16) && !($gioBatDauInt >= 16 && $gioBatDauInt < 23)) {
-        echo "<p style='color: red; text-align: center;'>Sân đã đóng cửa, vui lòng chọn lại giờ trong khung giờ hoạt động!</p>";
+    if (!($gioBatDauInt >= 6 && $gioBatDauInt < 23)) {
+        echo "<p style='color: red; text-align: center;'>Sân chỉ hoạt động từ 6:00 đến 23:00, vui lòng chọn lại giờ!</p>";
         exit();
     }
 
-    // Kiểm tra trùng giờ
-    
-  
-    $kiemtratrung = $p->getKiemTraTrungGio($ngayDat);
-    
-    $isTrung = false; // Biến đánh dấu nếu có trùng
-    if ($kiemtratrung) {
-       
-        while ($r = $kiemtratrung->fetch_assoc()) {
-            $thoiGianBatDauDaDat = strtotime($r['ThoiGianBatDau']);
-            $thoiGianKetThucDaDat = strtotime($r['ThoiGianKetThuc']);
-            $trangThai = $r['TrangThai'];
-            $maSanBong = $r['MaSanBong'];
-            
-            
-            // Kiểm tra trùng giờ trên cùng một sân
-            if (
-                $maSanBong == $masan && 
-                $trangThai === "Đã đặt" &&
-                strtotime($gioBatDau) < $thoiGianKetThucDaDat && 
-                strtotime($gioKetThuc) > $thoiGianBatDauDaDat
-            ){
-                
+ // Kiểm tra trùng giờ
+$kiemtratrung = $p->getKiemTraTrungGio($ngayDat, $masan);
+$isTrung = false;
 
-                $isTrung = true;
-                break; // Thoát vòng lặp khi phát hiện trùng
-            }
+if ($kiemtratrung) {
+    while ($r = $kiemtratrung->fetch_assoc()) {
+        $thoiGianBatDauDaDat = strtotime($r['ThoiGianBatDau']);
+        $thoiGianKetThucDaDat = strtotime($r['ThoiGianKetThuc']);
+        $trangThai = $r['TrangThai'];
+        $maSanBong = $r['MaSanBong'];
+
+        // Kiểm tra nếu mã sân trùng và trạng thái là "Đã đặt"
+        if (
+            $maSanBong == $masan && 
+            $trangThai === "Đã đặt" && 
+            strtotime($gioBatDau) < $thoiGianKetThucDaDat && // Kiểm tra nếu giờ bắt đầu trùng giờ kết thúc của sân đã đặt
+            strtotime($gioKetThuc) > $thoiGianBatDauDaDat  // Kiểm tra nếu giờ kết thúc trùng giờ bắt đầu của sân đã đặt
+        ) {
+            $isTrung = true;
+            break; // Thoát vòng lặp khi phát hiện trùng
         }
-        
-        if ($isTrung) {
-            echo "<p style='color: red; text-align: center;'>Khoảng thời gian đã có người đặt!</p>";
-            exit();
-        }
-    } else {
-        
-        // Tính tổng tiền
-        $giaSang = $bangGia[$maloaisan]['sang'];
-        $giaChieu = $bangGia[$maloaisan]['chieu'];
-
-        $thoiGianBatDau = strtotime($gioBatDau);
-        $thoiGianKetThuc = strtotime($gioKetThuc);
-        $tongTien = 0;
-
-        while ($thoiGianBatDau < $thoiGianKetThuc) {
-            $gioHienTai = (int)date("H", $thoiGianBatDau);
-            if ($gioHienTai >= 6 && $gioHienTai < 16) {
-                $tongTien += $giaSang / 60; // Giá mỗi phút
-            } elseif ($gioHienTai >= 16 && $gioHienTai < 23) {
-                $tongTien += $giaChieu / 60; // Giá mỗi phút
-            }
-            $thoiGianBatDau += 60; // Cộng thêm 1 phút
-        }
-
-        // Hiển thị thông tin đặt sân
-        echo "<div class='info-box'><form method='post'>";
-        echo "<h3>Thông tin đặt sân:</h3>";
-        echo "<p><strong>Số điện thoại:</strong> {$_POST['txtSDT']}</p>";
-        echo "<p><strong>Ngày đặt:</strong> $ngayDat</p>";
-        echo "<p><strong>Giờ bắt đầu:</strong> $gioBatDau</p>";
-        echo "<p><strong>Giờ kết thúc:</strong> $gioKetThuc</p>";
-        echo "<p><strong>Tổng tiền:</strong> " . number_format($tongTien, 0, ',', '.') . " VNĐ</p>";
-        echo "<button type='submit' name='subds' class='btn-view'>Xác nhận đặt sân</button>";
-        echo "</form></div>";
-
-        $_SESSION['txtSDT'] = $_POST['txtSDT'];
-        $_SESSION['txtNgayDat'] = $ngayDat;
-        $_SESSION['txtGioBatDau'] = $gioBatDau;
-        $_SESSION['txtGioKetThuc'] = $gioKetThuc;
-        $_SESSION['total'] = $tongTien;
     }
+
+    if ($isTrung) {
+        echo "<p style='color: red; text-align: center;'>Khoảng thời gian đã có người đặt trên sân này! Vui lòng chọn lại thời gian khác.</p>";
+        exit();
+    }
+}
+
+
+
+
+    // Tính tổng tiền
+    $giaSang = $bangGia[$maloaisan]['sang'];
+    $giaChieu = $bangGia[$maloaisan]['chieu'];
+    
+    $thoiGianBatDau = strtotime($gioBatDau);
+    $thoiGianKetThuc = strtotime($gioKetThuc);
+    $tongTien = 0;
+
+    // Tính tiền theo từng phút trong khoảng thời gian
+    while ($thoiGianBatDau < $thoiGianKetThuc) {
+        $gioHienTai = (int)date("H", $thoiGianBatDau);
+        if ($gioHienTai >= 6 && $gioHienTai < 16) {
+            $tongTien += $giaSang / 60; // Giá mỗi phút
+        } elseif ($gioHienTai >= 16 && $gioHienTai < 23) {
+            $tongTien += $giaChieu / 60; // Giá mỗi phút
+        }
+        $thoiGianBatDau += 60; // Cộng thêm 1 phút
+    }
+
+    // Hiển thị thông tin đặt sân
+    echo "<div class='info-box'><form method='post'>";
+    echo "<h3>Thông tin đặt sân:</h3>";
+    echo "<p><strong>Số điện thoại:</strong> {$_POST['txtSDT']}</p>";
+    echo "<p><strong>Ngày đặt:</strong> $ngayDat</p>";
+    echo "<p><strong>Giờ bắt đầu:</strong> $gioBatDau</p>";
+    echo "<p><strong>Giờ kết thúc:</strong> $gioKetThuc</p>";
+    echo "<p><strong>Tổng tiền:</strong> " . number_format($tongTien, 0, ',', '.') . " VNĐ</p>";
+    echo "<button type='submit' name='subds' class='btn-view'>Xác nhận đặt sân</button>";
+    echo "</form></div>";
+
+    // Lưu thông tin vào session
+    $_SESSION['txtSDT'] = $_POST['txtSDT'];
+    $_SESSION['txtNgayDat'] = $ngayDat;
+    $_SESSION['txtGioBatDau'] = $gioBatDau;
+    $_SESSION['txtGioKetThuc'] = $gioKetThuc;
+    $_SESSION['total'] = $tongTien;
 } 
 
 // Xử lý xác nhận đặt sân
 if (isset($_POST['subds'])) {
     $p = new cDonDatSan();
-    $result = $p->getinsertDatSan($masan, $_SESSION['MaKH'], $_SESSION['txtNgayDat'], $_SESSION['txtGioBatDau'] , $_SESSION['txtGioKetThuc'] , $_SESSION['total'],$_SESSION['TenKH']);
+    $result = $p->getinsertDatSan($masan, $_SESSION['MaKH'], $_SESSION['txtNgayDat'], $_SESSION['txtGioBatDau'], $_SESSION['txtGioKetThuc'], $_SESSION['total'], $_SESSION['TenKH']);
+    
     if ($result) {
         echo "<script>alert('Đặt sân thành công!');</script>";
         header("refresh: 0; url='../admin.php?dondat'");
@@ -358,6 +354,7 @@ if (isset($_POST['subds'])) {
     }
 }
 ?>
+
 <script>
     // Hàm kiểm tra và ngừng reset nếu có lỗi
    // Hàm kiểm tra và ngừng reset nếu có lỗi

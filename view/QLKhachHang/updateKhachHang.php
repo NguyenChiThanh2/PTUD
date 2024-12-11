@@ -2,12 +2,11 @@
 include_once('controller/cKhachHang.php');
 $pkh = new cKhachHang();
 
-// Kiểm tra mã sân bóng đã có trong URL hay chưa
+// Kiểm tra mã khách hàng có trong URL hay chưa
 if (isset($_GET['MaKhachHang'])) {
     $maKhachHang = $_GET['MaKhachHang'];
- //   $maChuSan = $_GET['MaChuSan'];
 
-    // Lấy thông tin sân bóng từ DB
+    // Lấy thông tin khách hàng từ DB
     $KhachHang = $pkh->GetKhachHangByMaKhachHang($maKhachHang);
     if ($KhachHang) {
         $KhachHangData = mysqli_fetch_assoc($KhachHang);
@@ -69,26 +68,18 @@ if (isset($_GET['MaKhachHang'])) {
 
     <div class="form-group" style="position: relative;">
         <label for="MatKhau">Mật Khẩu</label>
-        <input type="password" id="MatKhau" name="MatKhau" required value="<?php if(isset($matkhau)) echo $matkhau; ?>" style="padding-right: 40px;">
-            <!-- Biểu tượng con mắt -->
-            <span id="togglePassword" style="position: absolute; right: 10px; top: 40px; cursor: pointer;">
-                👁️
-            </span>
+        <input type="password" id="MatKhau" name="MatKhau" value="<?php if(isset($matkhau)) echo $matkhau; ?>" style="padding-right: 40px;">
+        <span id="togglePassword" style="position: absolute; right: 10px; top: 40px; cursor: pointer;">👁️</span>
     </div>
 
-    
-
-    
     <div class="form-group" style="display: flex; justify-content: space-between;">
         <input type="submit" name="btnUpdateKhachHang" value="Cập Nhật Khách Hàng">
         <input type="reset" value="Hủy" onclick="history.back();">
     </div>
 </form>
 
-
 <script>
-    // Regex cho từng loại kiểm tra
-    const nameRegex = /^[A-ZÀÁÃẠẢĂẲẰẮẴẶÂẦẪẬẨẤÈẺÉẼẸÊỂẾỀỆỄÌỈÍỊĨÒỎÓỌÕÔỔỐỒỘỖỞƠỚỜỢỠÙÚỦŨỤĐƯỨỪỮỰỬỲỴÝỶỸ][a-zàáãạảăẳằắẵặâầẫậẩấèẻéẽẹêểếềệễìỉíịĩòỏóọõôổốồộỗởơớờợỡùúủũụđưứừữựửỳỵýỷỹ]*(\s[A-ZÀÁÃẠẢĂẲẰẮẴẶÂẦẪẬẨẤÈẺÉẼẸÊỂẾỀỆỄÌỈÍỊĨÒỎÓỌÕÔỔỐỒỘỖỞƠỚỜỢỠÙÚỦŨỤĐƯỪỨỮỰỬỲỴÝỶỸ][a-zàáãạảăẳằắẵặâầẫậẩấèẻéẽẹêểếềệễìỉíịĩòỏóọõôổốồộỗởơớờợỡùúủũụđưứừữựửỳỵýỷỹ]*)*$/u;
+        const nameRegex = /^[A-ZÀÁÃẠẢĂẲẰẮẴẶÂẦẪẬẨẤÈẺÉẼẸÊỂẾỀỆỄÌỈÍỊĨÒỎÓỌÕÔỔỐỒỘỖỞƠỚỜỢỠÙÚỦŨỤĐƯỨỪỮỰỬỲỴÝỶỸ][a-zàáãạảăẳằắẵặâầẫậẩấèẻéẽẹêểếềệễìỉíịĩòỏóọõôổốồộỗởơớờợỡùúủũụđưứừữựửỳỵýỷỹ]*(\s[A-ZÀÁÃẠẢĂẲẰẮẴẶÂẦẪẬẨẤÈẺÉẼẸÊỂẾỀỆỄÌỈÍỊĨÒỎÓỌÕÔỔỐỒỘỖỞƠỚỜỢỠÙÚỦŨỤĐƯỪỨỮỰỬỲỴÝỶỸ][a-zàáãạảăẳằắẵặâầẫậẩấèẻéẽẹêểếềệễìỉíịĩòỏóọõôổốồộỗởơớờợỡùúủũụđưứừữựửỳỵýỷỹ]*)*$/u;
     const addressRegex = /^[a-zA-ZÀÁÃẠẢĂẲẰẮẴẶÂẦẪẬẨẤÈẺÉẼẸÊỂẾỀỆỄÌỈÍỊĨÒỎÓỌÕÔỔỐỒỘỖỞƠỚỜỢỠÙÚỨỦŨỤĐƯỪỮỰỬỲỴÝỶỸàáãạảăẳằắẵặâầẫậẩấèẻéẽẹêểếềệễìỉíịĩòỏóọõôổốồộỗởơớờợỡùúủũụđưứừữựửỳỵýỷỹ0-9\s,\/\.]+$/u;
     const emailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
     const phoneRegex = /^(03|07|08|09)[0-9]{8}$/;
@@ -102,9 +93,11 @@ if (isset($_GET['MaKhachHang'])) {
             input.style.border = "2px solid red"; // Viền đỏ
             errorElement.style.display = "block"; // Hiển thị thông báo lỗi
             errorElement.innerText = errorMessage;
+            return false; // Trả về false nếu có lỗi
         } else {
             input.style.border = "2px solid green"; // Viền xanh lá cây
             errorElement.style.display = "none"; // Ẩn thông báo lỗi
+            return true; // Trả về true nếu không có lỗi
         }
     }
 
@@ -124,36 +117,62 @@ if (isset($_GET['MaKhachHang'])) {
     document.getElementById("DiaChi").addEventListener("blur", function () {
         validateField(this, addressRegex, "Địa chỉ không hợp lệ! Vui lòng nhập địa chỉ hợp lệ.");
     });
+
+    // Kiểm tra và gửi form
+    document.querySelector('form').addEventListener('submit', function (e) {
+        let isValid = true;
+
+        // Kiểm tra từng trường một
+        isValid &= validateField(document.getElementById("TenKhachHang"), nameRegex, "Tên không hợp lệ! Tên phải viết hoa chữ cái đầu và không chứa ký tự đặc biệt.");
+        isValid &= validateField(document.getElementById("Email"), emailRegex, "Email không hợp lệ! Vui lòng nhập đúng định dạng xxx@gmail.com.");
+        isValid &= validateField(document.getElementById("SDT"), phoneRegex, "Số điện thoại không hợp lệ! Vui lòng nhập 10 số với đầu số 03, 07, 08 hoặc 09.");
+        isValid &= validateField(document.getElementById("DiaChi"), addressRegex, "Địa chỉ không hợp lệ! Vui lòng nhập địa chỉ hợp lệ.");
+
+        if (!isValid) {
+            e.preventDefault(); // Ngừng gửi form nếu có lỗi
+            alert("Vui lòng sửa các trước khi gửi!");
+        }
+    });
+
+// Toggle password visibility
+document.getElementById("togglePassword").addEventListener("click", function () {
+    const passwordField = document.getElementById("MatKhau");
+    const type = passwordField.type === "password" ? "text" : "password";
+    passwordField.type = type;
+});
+
+
 </script>
 
 <?php
+// Xử lý cập nhật khách hàng
+if (isset($_POST['btnUpdateKhachHang'])) {
+    $tenKhachHang = $_POST['TenKhachHang'] ?? '';
+    $email = $_POST['Email'] ?? '';
+    $sdt = $_POST['SDT'] ?? '';
+    $matKhau = $_POST['MatKhau'] ?? '';
+    $diaChi = $_POST['DiaChi'] ?? '';
+    $gioiTinh = $_POST['GioiTinh'] ?? '';
 
-        if (isset($_POST['btnUpdateKhachHang'])) {
-            $tenKhachHang = $_POST['TenKhachHang'] ?? '';
-            $email = $_POST['Email'] ?? '';
-            $sdt = $_POST['SDT'] ?? '';
-            $matKhau = $_POST['MatKhau'] ?? '';
-            $diaChi = $_POST['DiaChi'] ?? '';
-            $gioiTinh = $_POST['GioiTinh'] ?? '';
+    // Nếu mật khẩu không đổi, giữ nguyên mật khẩu cũ
+    if (!empty($matKhau)) {
+        $matKhau = md5($matKhau);
+    } else {
+        $matKhau = $KhachHangData['MatKhau'];
+    }
 
-            $matKhau = md5($matKhau);
+    // Gọi hàm cập nhật khách hàng từ model
+    $kq = $pkh->updateKhachHang($maKhachHang, $tenKhachHang, $email, $sdt, $matKhau, $diaChi, $gioiTinh);
 
-            // Gọi hàm cập nhật khách hàng từ model
-            $kq = $pkh->updateKhachHang($maKhachHang, $tenKhachHang, $email, $sdt, $matKhau, $diaChi, $gioiTinh);
-
-            if ($kq) {
-                echo "<script>alert('Cập nhật khách hàng thành công!');</script>";
-                echo "<script>window.location.href = 'admin.php?khachhang';</script>";
-
-                exit();
-            } else {
-                echo "<script>alert('Cập nhật khách hàng thất bại!');</script>";
-            }
-        }
-
-
+    if ($kq) {
+        echo "<script>alert('Cập nhật khách hàng thành công!');</script>";
+        echo "<script>window.location.href = 'admin.php?khachhang';</script>";
+        exit();
+    } else {
+        echo "<script>alert('Cập nhật khách hàng thất bại!');</script>";
+    }
+}
 ?>
-
 
 <style>
     body {
@@ -192,7 +211,6 @@ if (isset($_GET['MaKhachHang'])) {
     }
 
     .form-group input,
-    .form-group textarea,
     .form-group select {
         width: 100%;
         padding: 10px;
@@ -214,10 +232,6 @@ if (isset($_GET['MaKhachHang'])) {
         background-color: #007bff;
         color: white;
         transition: background-color 0.3s ease;
-    }
-
-    .form-group input[type="reset"] {
-        background-color: #6c757d;
     }
 
     .form-group input[type="submit"]:hover {

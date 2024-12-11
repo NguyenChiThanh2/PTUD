@@ -5,7 +5,6 @@ $pkh = new ControllerChuSan();
 // Kiểm tra mã sân bóng đã có trong URL hay chưa
 if (isset($_GET['MaChuSan'])) {
     $maChuSan = $_GET['MaChuSan'];
- //   $maChuSan = $_GET['MaChuSan'];
 
     // Lấy thông tin sân bóng từ DB
     $ChuSan = $pkh->GetChuSanByMaChuSan($maChuSan);
@@ -76,15 +75,11 @@ if (isset($_GET['MaChuSan'])) {
             </span>
     </div>
 
-    
-
-    
     <div class="form-group" style="display: flex; justify-content: space-between;">
         <input type="submit" name="btnUpdateChuSan" value="Cập Nhật Chủ Sân">
         <input type="reset" value="Hủy" onclick="history.back();">
     </div>
 </form>
-
 
 <script>
     // Regex cho từng loại kiểm tra
@@ -102,9 +97,11 @@ if (isset($_GET['MaChuSan'])) {
             input.style.border = "2px solid red"; // Viền đỏ
             errorElement.style.display = "block"; // Hiển thị thông báo lỗi
             errorElement.innerText = errorMessage;
+            return false; // Trả về false nếu có lỗi
         } else {
             input.style.border = "2px solid green"; // Viền xanh lá cây
             errorElement.style.display = "none"; // Ẩn thông báo lỗi
+            return true; // Trả về true nếu không có lỗi
         }
     }
 
@@ -124,36 +121,54 @@ if (isset($_GET['MaChuSan'])) {
     document.getElementById("DiaChi").addEventListener("blur", function () {
         validateField(this, addressRegex, "Địa chỉ không hợp lệ! Vui lòng nhập địa chỉ hợp lệ.");
     });
+
+    // Kiểm tra và gửi form
+    document.querySelector('form').addEventListener('submit', function (e) {
+        let isValid = true;
+
+        // Kiểm tra từng trường một
+        isValid &= validateField(document.getElementById("tenChuSan"), nameRegex, "Tên không hợp lệ! Tên phải viết hoa chữ cái đầu và không chứa ký tự đặc biệt.");
+        isValid &= validateField(document.getElementById("Email"), emailRegex, "Email không hợp lệ! Vui lòng nhập đúng định dạng xxx@gmail.com.");
+        isValid &= validateField(document.getElementById("SDT"), phoneRegex, "Số điện thoại không hợp lệ! Vui lòng nhập 10 số với đầu số 03, 07, 08 hoặc 09.");
+        isValid &= validateField(document.getElementById("DiaChi"), addressRegex, "Địa chỉ không hợp lệ! Vui lòng nhập địa chỉ hợp lệ.");
+
+        if (!isValid) {
+            e.preventDefault(); // Ngừng gửi form nếu có lỗi
+            alert("Vui lòng sửa các trước khi gửi!");
+        }
+    });
+
+    document.getElementById("togglePassword").addEventListener("click", function () {
+    const passwordField = document.getElementById("MatKhau");
+    const type = passwordField.type === "password" ? "text" : "password";
+    passwordField.type = type;
+});
 </script>
 
 <?php
+if (isset($_POST['btnUpdateChuSan'])) {
+    $tenCS = $_POST['tenChuSan'] ?? '';
+    $email = $_POST['Email'] ?? '';
+    $sdt = $_POST['SDT'] ?? '';
+    $matKhau = $_POST['MatKhau'] ?? '';
+    $diaChi = $_POST['DiaChi'] ?? '';
+    $gioiTinh = $_POST['GioiTinh'] ?? '';
 
-        if (isset($_POST['btnUpdateChuSan'])) {
-            $tenCS = $_POST['tenChuSan'] ?? '';
-            $email = $_POST['Email'] ?? '';
-            $sdt = $_POST['SDT'] ?? '';
-            $matKhau = $_POST['MatKhau'] ?? '';
-            $diaChi = $_POST['DiaChi'] ?? '';
-            $gioiTinh = $_POST['GioiTinh'] ?? '';
+    $matKhau = md5($matKhau);
 
-            $matKhau = md5($matKhau);
-                    // Gọi hàm cập nhật khách hàng từ model
-            $kq = $pkh->updateChuSan($maChuSan, $tenCS, $email, $sdt, $matKhau, $diaChi, $gioiTinh);
-           
-            if ($kq) {
-                echo "<script>alert('Cập nhật chủ sân thành công!');</script>";
-                echo "<script>window.location.href = 'admin.php?chusan';</script>";
+    // Gọi hàm cập nhật khách hàng từ model
+    $kq = $pkh->updateChuSan($maChuSan, $tenCS, $email, $sdt, $matKhau, $diaChi, $gioiTinh);
 
-                exit();
-            } else {
-                echo "<script>alert('Cập nhật chủ sân thất bại!');</script>";
-                echo "<script>window.location.href = 'admin.php?chusan';</script>";
-            }
-        }
-
-
+    if ($kq) {
+        echo "<script>alert('Cập nhật chủ sân thành công!');</script>";
+        echo "<script>window.location.href = 'admin.php?chusan';</script>";
+        exit();
+    } else {
+        echo "<script>alert('Cập nhật chủ sân thất bại!');</script>";
+        echo "<script>window.location.href = 'admin.php?chusan';</script>";
+    }
+}
 ?>
-
 
 <style>
     body {
@@ -192,39 +207,37 @@ if (isset($_GET['MaChuSan'])) {
     }
 
     .form-group input,
-    .form-group textarea,
     .form-group select {
         width: 100%;
         padding: 10px;
-        border: 1px solid #ccc;
+        margin: 5px 0;
         border-radius: 5px;
-        font-size: 14px;
-        color: #333;
+        border: 1px solid #ccc;
     }
 
     .form-group input[type="submit"],
     .form-group input[type="reset"] {
-        width: 48%;
-        cursor: pointer;
-        font-weight: bold;
-        border: none;
-        border-radius: 5px;
-        padding: 10px;
-        margin-right: 4%;
-        background-color: #007bff;
+        background-color: #4CAF50;
         color: white;
-        transition: background-color 0.3s ease;
+        border: none;
+        cursor: pointer;
+        padding: 10px 20px;
+        border-radius: 5px;
     }
 
-    .form-group input[type="reset"] {
-        background-color: #6c757d;
-    }
-
-    .form-group input[type="submit"]:hover {
-        background-color: #0056b3;
-    }
-
+    .form-group input[type="submit"]:hover,
     .form-group input[type="reset"]:hover {
-        background-color: #495057;
+        background-color: #45a049;
+    }
+
+    .form-group input[type="password"] {
+        padding-right: 40px;
+    }
+
+    .error-message {
+        display: none;
+        color: red;
+        font-size: 12px;
+        margin-top: 5px;
     }
 </style>

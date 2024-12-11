@@ -21,6 +21,7 @@ if ($kq && mysqli_num_rows($kq) > 0) {
             <th>Mã Khách Hàng</th>
             <th>Tên Khách Hàng</th>
             <th>Tên Sân</th>
+            <th>Ngày Nhận Sân </th>
             <th>Giờ Bắt Đầu</th>
             <th>Giờ Kết Thúc</th>
             <th>Tổng Tiền</th>
@@ -34,6 +35,7 @@ if ($kq && mysqli_num_rows($kq) > 0) {
         echo "<td>".$r["MaKhachHang"]."</td>";
         echo "<td>".$r["TenKhachHang"]."</td>";
         echo "<td>".$r["TenSanBong"]."</td>";
+        echo "<td>".$r["NgayNhanSan"]."</td>";
         echo "<td>".$r["ThoiGianBatDau"]."</td>";
         echo "<td>".$r["ThoiGianKetThuc"]."</td>";
         echo "<td>".number_format($r["TongTien"], 2, '.', ',')."</td>";

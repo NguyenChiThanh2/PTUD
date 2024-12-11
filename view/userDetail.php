@@ -3,6 +3,9 @@
 session_start();
 ob_start();
 
+if(!$_SESSION['dangnhap']){
+    header('refresh: 0.5; url=dangnhap.php');
+}
 if (!isset($_SESSION["dangnhap"]) || !isset($_SESSION["loaiNguoiDung"])) {
     echo '<script>alert("Bạn không có quyền truy cập!");</script>';
     header("refresh: 0; url=../index.php");

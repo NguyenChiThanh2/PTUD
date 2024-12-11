@@ -39,6 +39,38 @@
                 return false;
             }
         }
+        public function selectCoSoByTenAnDiaChi($tenCoSo,$DiaChi): bool|mysqli_result {
+            // Mở kết nối cơ sở dữ liệu
+            $p = new mKetNoi();
+            $con = $p->moKetNoi();
+        
+            // Chuẩn bị câu lệnh SQL
+            $sql = "SELECT * FROM `coso` WHERE TenCoSo = ? AND DiaChi = ?";
+            
+            // Chuẩn bị câu lệnh SQL để tránh SQL Injection
+            if ($stmt = mysqli_prepare($con, $sql)) {
+                // Liên kết tham số
+                mysqli_stmt_bind_param($stmt, "ss", $tenCoSo, $DiaChi); // "ss" chỉ loại dữ liệu string cho hai tham số
+                
+                // Thực thi câu lệnh
+                mysqli_stmt_execute($stmt);
+                
+                // Lấy kết quả
+                $kq = mysqli_stmt_get_result($stmt);
+                
+                // Đóng câu lệnh đã chuẩn bị
+                mysqli_stmt_close($stmt);
+            } else {
+                // Trường hợp lỗi chuẩn bị câu lệnh
+                $kq = false;
+            }
+        
+            // Đóng kết nối
+            $p->dongKetNoi($con);
+            
+            // Trả về kết quả
+            return $kq;
+        }
 
         public function insertCoSo($tenCoSo,$DiaChi,$moTa,$maChuSan){
             $p = new mKetNoi();
@@ -53,6 +85,7 @@
                 return false;
             }
         }
+
 
         public function updateCoSo($macoso,$tenCoSo,$DiaChi,$moTa,$maChuSan){
             $p = new mKetNoi();

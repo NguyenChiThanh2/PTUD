@@ -32,7 +32,19 @@ include_once("model/mCoSo.php");
             }
         }
 
-        
+        public function getallCoSoByTenAnDiaChi($tenCoSo,$DiaChi) {
+            $p = new mCoSo();
+            
+            // Lấy kết quả từ phương thức selectSanbongByTenSanBong
+            $kq = $p->selectCoSoByTenAnDiaChi($tenCoSo,$DiaChi);
+            
+            // Kiểm tra xem có bản ghi nào trong kết quả không
+            if ($kq && mysqli_num_rows($kq) > 0) {
+                return 1; // Có bản ghi
+            } else {
+                return false; // Không có bản ghi
+            }
+        }
 
         public function insertCoSo($tenCoSo,$DiaChi,$moTa,$maChuSan){
             $p = new mCoSo();
