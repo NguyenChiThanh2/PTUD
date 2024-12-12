@@ -253,32 +253,65 @@ class mDonDatSan {
     
 
     public function getThongTinVaCapNhatTrangThaiDon($maDonDatSan) {
+        // Kết nối đến cơ sở dữ liệu
         $p = new mKetNoi();
         $con = $p->moKetNoi();
-    
-        // Truy vấn lấy thông tin chi tiết của đơn đặt sân
-        $sqlThongTin = "SELECT kh.Email, kh.TenKhachHang, sb.TenSanBong, d.NgayDat, d.GioBatDau, d.GioKetThuc, d.TongTien ,ct.NgayNhanSan ,ct.ThoiGianBatDau , ct.ThoiGianKetThuc
-                        FROM dondatsan1 d join chitietdondatsan ct on ct.MaDonDatSan = d.MaDonDatSan
+        
+        // Sử dụng Prepared Statements để tránh SQL Injection
+        $sqlThongTin = "SELECT d.MaDonDatSan, d.TrangThai, kh.Email, kh.TenKhachHang, sb.MaSanBong, sb.TenSanBong, d.NgayDat, d.GioBatDau, d.GioKetThuc, d.TongTien, ct.NgayNhanSan, ct.ThoiGianBatDau, ct.ThoiGianKetThuc
+                        FROM dondatsan1 d
+                        JOIN chitietdondatsan ct ON ct.MaDonDatSan = d.MaDonDatSan
                         INNER JOIN khachhang kh ON d.MaKhachHang = kh.MaKhachHang
                         INNER JOIN sanbong sb ON d.MaSanBong = sb.MaSanBong
-                        WHERE d.MaDonDatSan = '$maDonDatSan'";
-        $resultThongTin = mysqli_query($con, $sqlThongTin);
+                        WHERE d.MaDonDatSan = ?";
+        
+        // Chuẩn bị câu truy vấn
+        $stmt = $con->prepare($sqlThongTin);
+        if ($stmt === false) {
+            // Xử lý lỗi nếu không thể chuẩn bị câu truy vấn
+            die("Error preparing SQL query: " . $con->error);
+        }
+        
+        // Liên kết tham số với câu truy vấn
+        $stmt->bind_param("i", $maDonDatSan);  // "i" cho integer (MaDonDatSan là số nguyên)
     
-        if ($resultThongTin && mysqli_num_rows($resultThongTin) > 0) {
-            $thongTinDon = mysqli_fetch_assoc($resultThongTin);
-    
-            // Cập nhật trạng thái đơn đặt sân
-            $sqlCapNhat = "UPDATE dondatsan1 SET TrangThai = 'Đã đặt' WHERE MaDonDatSan = '$maDonDatSan'";
-            $resultCapNhat = mysqli_query($con, $sqlCapNhat);
-    
-            if ($resultCapNhat && mysqli_affected_rows($con) > 0) {
-                $p->dongKetNoi($con);
-                return $thongTinDon; // Trả về thông tin đơn đặt sân
-            }
+        // Thực thi câu truy vấn
+        $stmt->execute();
+        
+        // Lấy kết quả truy vấn
+        $result = $stmt->get_result();
+        
+        // Đảm bảo rằng kết quả truy vấn không rỗng
+        if ($result->num_rows > 0) {
+            // Lấy thông tin đơn đặt sân
+            $thongTinDon = $result->fetch_assoc();
+        } else {
+            $thongTinDon = null;  // Nếu không có kết quả, trả về null
         }
     
+        // Đóng kết nối
+        $stmt->close();
         $p->dongKetNoi($con);
-        return false; // Trả về false nếu thất bại
+    
+        return $thongTinDon; // Trả về kết quả
+    }
+    
+    public function UpdateTrangThaiSan($maDonDatSan,$trangThai) {
+        $p = new mKetNoi();
+        $con = $p->moKetNoi();
+        
+    
+            // Cập nhật trạng thái đơn đặt sân
+            $sql = "UPDATE dondatsan1 SET TrangThai = N'$trangThai' WHERE MaDonDatSan = '$maDonDatSan'";
+            $kq = mysqli_query($con, $sql);
+    
+            $kq = $con->query($sql); // Thực thi truy vấn
+        $p->dongKetNoi($con); // Đóng kết nối
+        if ($kq) {
+            return $kq; // Nếu có trùng giờ, trả về kết quả
+        } else {
+            return false; // Nếu không trùng giờ
+        }
     }
     
     
@@ -312,8 +345,10 @@ class mDonDatSan {
     public function GetDonDatSanById($maDonDatSan) {
         $p = new mKetNoi();
         $conn = $p->moKetNoi();
-        $query = "SELECT dds.MaDonDatSan, dds.TrangThai, dds.TongTien ,dds.TenKhachHang,kh.MaKhachHang, ct.NgayNhanSan , ct.ThoiGianBatDau, ct.ThoiGianKetThuc FROM DonDatSan1 dds 
+        $query = "SELECT sb.TenSanBong, dds.MaDonDatSan, dds.TrangThai, dds.TongTien ,dds.TenKhachHang,kh.MaKhachHang, ct.NgayNhanSan , ct.ThoiGianBatDau, ct.ThoiGianKetThuc FROM DonDatSan1 dds 
+        JOIN sanbong sb on dds.MaSanBong = sb.MaSanBong
         join chitietdondatsan ct on dds.MaDonDatSan = ct.MaDonDatSan 
+
         join KhachHang kh on dds.MaKhachHang = kh.MaKhachHang WHERE dds.MaDonDatSan = ?";
      
         if ($stmt = $conn->prepare($query)) {

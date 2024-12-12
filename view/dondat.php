@@ -38,7 +38,7 @@ if ($kq && mysqli_num_rows($kq) > 0) {
         echo "<td>".$r["NgayNhanSan"]."</td>";
         echo "<td>".$r["ThoiGianBatDau"]."</td>";
         echo "<td>".$r["ThoiGianKetThuc"]."</td>";
-        echo "<td>".number_format($r["TongTien"], 2, '.', ',')."</td>";
+        echo "<td>".number_format($r["TongTien"], 0, '.', ',')."</td>";
         echo "<td>".$r["TrangThai"]."</td>";
         echo "<td>";
 

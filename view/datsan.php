@@ -241,6 +241,7 @@ if (isset($_POST['btnDat'])) {
     }
 
     $ngayDat = $_POST['txtNgayDat'];
+    
     $gioBatDau = $_POST['txtGioBatDau'];
     $gioKetThuc = $_POST['txtGioKetThuc'];
 
@@ -299,7 +300,7 @@ if ($kiemtratrung) {
     }
 }
 
-
+    
 
 
     // Tính tổng tiền

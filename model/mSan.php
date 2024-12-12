@@ -5,8 +5,11 @@
             $p = new mKetNoi();
             $con=$p->moKetNoi();
             if($con){
-                $truyvan = "SELECT sanbong.*, loaisan.TenLoai
-                            FROM sanbong JOIN loaisan ON sanbong.MaLoaiSan = loaisan.MaLoaiSan";
+                $truyvan = "SELECT chusan.TenChuSan ,sanbong.*, loaisan.TenLoai 
+                            FROM sanbong 
+                            JOIN coso on coso.MaCoSo = sanbong.MaCoSo
+                            Join chusan on chusan.MaChuSan = coso.MaChuSan
+                            JOIN loaisan ON sanbong.MaLoaiSan = loaisan.MaLoaiSan";
                 $kq = mysqli_query($con, $truyvan);
                 $p->dongKetNoi($con);
                 return $kq;
@@ -19,9 +22,10 @@
             $p = new mKetNoi();
             $con=$p->moKetNoi();
             if($con){
-                $truyvan = "SELECT sanbong.*, coso.DiaChi, loaisan.TenLoai
+                $truyvan = "SELECT chusan.SDT ,sanbong.*, coso.DiaChi, loaisan.TenLoai
                             FROM sanbong 
                             JOIN coso ON sanbong.MaCoSo = coso.MaCoSo
+                            JOIN chusan ON chusan.MaChuSan = coso.MaChuSan
                             JOIN loaisan ON sanbong.MaLoaiSan = loaisan.MaLoaiSan
                             WHERE MaSanBong = '$idsan'";
                 $kq = mysqli_query($con, $truyvan);
@@ -38,7 +42,10 @@
             if ($con) {
                 $truyvan = "SELECT sanbong.*, loaisan.TenLoai 
                             FROM sanbong 
+                            JOIN coso on coso.MaCoSo = sanbong.MaCoSo
+                            Join chusan on chusan.MaChuSan = coso.MaChuSan
                             JOIN loaisan ON sanbong.MaLoaiSan = loaisan.MaLoaiSan 
+                            
                             WHERE sanbong.MaLoaiSan = '$idloai'";
                             
                 $kq = mysqli_query($con, $truyvan);
@@ -84,7 +91,7 @@
             public function selectALLSanBongByMaChuSan($maChuSan) {
                 $p = new mKetNoi();
                 $con = $p->moKetNoi();
-                $sql = "SELECT sanbong.MaSanBong, sanbong.TenSanBong, sanbong.ThoiGianHoatDong, sanbong.MoTa, sanbong.HinhAnh, nhanvien.TenNhanVien, loaisan.TenLoai, coso.TenCoSo
+                $sql = "SELECT sanbong.MaSanBong,sanbong.MaLoaiSan, sanbong.TenSanBong, sanbong.ThoiGianHoatDong, sanbong.MoTa, sanbong.HinhAnh, nhanvien.TenNhanVien, loaisan.TenLoai, coso.TenCoSo
                 FROM sanbong
                 JOIN coso ON sanbong.MaCoSo = coso.MaCoSo
                 JOIN loaisan ON sanbong.MaLoaiSan = loaisan.MaLoaiSan
@@ -99,9 +106,10 @@
               public function GetSanbyTypeAndMaChuSan($idloai,$maChuSan) {
                 $p = new mKetNoi();
                 $con = $p->moKetNoi();
-                $sql = "SELECT sanbong.MaSanBong, sanbong.TenSanBong, sanbong.ThoiGianHoatDong, sanbong.MoTa, sanbong.HinhAnh, nhanvien.TenNhanVien, loaisan.TenLoai, coso.TenCoSo
+                $sql = "SELECT chusan.TenChuSan, sanbong.MaSanBong, sanbong.TenSanBong, sanbong.ThoiGianHoatDong, sanbong.MoTa, sanbong.HinhAnh, nhanvien.TenNhanVien, loaisan.TenLoai, coso.TenCoSo
                 FROM sanbong
                 JOIN coso ON sanbong.MaCoSo = coso.MaCoSo
+                JOIN chusan ON chusan.MaChuSan = coso.MaChuSan
                 JOIN loaisan ON sanbong.MaLoaiSan = loaisan.MaLoaiSan
                 JOIN nhanvien ON sanbong.MaNhanVien = nhanvien.MaNhanVien
                 WHERE nhanvien.MaChuSan = '$maChuSan' AND sanbong.MaLoaiSan = $idloai";

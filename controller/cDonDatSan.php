@@ -88,14 +88,21 @@ class cDonDatSan {
     }
 
     public function duyetVaGuiThongTinDonDatSan($maDonDatSan) {
+        // Tạo đối tượng của model
         $model = new mDonDatSan();
+    
+        // Lấy thông tin và cập nhật trạng thái của đơn
         $thongTinDon = $model->getThongTinVaCapNhatTrangThaiDon($maDonDatSan);
     
+        // Kiểm tra xem kết quả có hợp lệ hay không
         if ($thongTinDon) {
-            return $thongTinDon; // Trả về thông tin đơn đặt sân
+            return $thongTinDon; // Nếu có dữ liệu, trả về thông tin đơn
+        } else {
+            // Nếu không có dữ liệu hoặc có lỗi, xử lý lỗi và trả về false
+            return false;
         }
-        return false; // Trả về false nếu thất bại
     }
+    
 
 
  public function updateTrangThaiDatSan($maDonDatSan, $trangThai) {

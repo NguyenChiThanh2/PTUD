@@ -21,6 +21,7 @@ if ($kq) {
                 " . $r['TenLoai'] . "<br>
                 Địa chỉ cơ sở: " . $r['DiaChi'] . "<br>
                 <div class='highlight'>" . $r["ThoiGianHoatDong"] . "</div>
+                <div class='highlight'>SDT liên hệ: " . $r["SDT"] . "</div>
                 <br>";
         echo "
     <button class='btn-other'>
