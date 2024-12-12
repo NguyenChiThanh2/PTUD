@@ -97,7 +97,8 @@ if (isset($_REQUEST["printDon"])) {
         }
 
         // Chuyển hướng đến trang admin sau khi gửi email
-        header("Location: admin.php?dondat");
+        echo "<script>window.location.href = 'admin.php?dondat';</script>";
+
         exit();
     } else {
         echo "Có lỗi xảy ra khi duyệt đơn hoặc gửi email.";

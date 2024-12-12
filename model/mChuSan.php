@@ -79,7 +79,7 @@
         public function selectALLEmailsAndPhones(){
           $p = new mKetNoi();
           $con = $p->moKetNoi();
-          $sql = "select Email, SDT from nhanvien";
+          $sql = "select MaNhanVien, Email, SDT from nhanvien";
           $kq = mysqli_query($con, $sql);
           $p->dongKetNoi($con);
           return $kq;

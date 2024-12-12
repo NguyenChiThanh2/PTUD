@@ -121,11 +121,9 @@
             $existingData = $this->getAllEmailsAndPhones();
             while ($data = $existingData->fetch_assoc()) {
                 // Chỉ kiểm tra trùng lặp nếu không phải chính nhân viên đang được cập nhật
-                if (isset($data['MaNhanVien']) && $data['MaNhanVien'] != $maNV) {
-                    if ($data['Email'] === $email || $data['SDT'] === $sdt) {
-                        echo "<script>alert('Email hoặc số điện thoại đã tồn tại!');</script>";
-                        return false;
-                    }
+                if ($data['MaNhanVien'] != $maNV && $data['Email'] === $email || $data['MaNhanVien'] != $maNV && $data['SDT'] === $sdt) {
+                    echo "<script>alert('Email hoặc số điện thoại đã tồn tại!');</script>";
+                    return false;
                 }
             }
             // Thực hiện cập nhật nhân viên

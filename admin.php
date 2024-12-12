@@ -91,7 +91,77 @@ article p {
     line-height: 1.6;
     color: #555;
 }
+body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f9;
+        margin: 0;
+        padding-left: 0;
+        align-items: center;
+        height: 100vh;
+    }
 
+    h2 {
+        text-align: center;
+        color: #333;
+        margin-bottom: 20px;
+    }
+
+    .form-container {
+        background: #ffffff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        width: 400px;
+        margin-left: 400px;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+        color: #555;
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 14px;
+        color: #333;
+    }
+
+    .form-group input[type="submit"],
+    .form-group input[type="reset"] {
+        width: 48%;
+        cursor: pointer;
+        font-weight: bold;
+        border: none;
+        border-radius: 5px;
+        padding: 10px;
+        margin-right: 4%;
+        background-color: #007bff;
+        color: white;
+        transition: background-color 0.3s ease;
+    }
+
+    .form-group input[type="reset"] {
+        background-color: #6c757d;
+    }
+
+    .form-group input[type="submit"]:hover {
+        background-color: #0056b3;
+    }
+
+    .form-group input[type="reset"]:hover {
+        background-color: #495057;
+    }
     </style>
 </head>
 <body>
@@ -232,3 +302,6 @@ article p {
     <script src="script.js"></script>
 </body>
 </html>
+<style>
+
+</style>

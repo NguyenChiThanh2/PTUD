@@ -2,18 +2,17 @@
 include_once("Controller/cDonDatSan.php");
 include_once("Controller/cSan.php");
 
-
 $psan = new cSan();
 $controller = new cDonDatSan();
 
-// Fetch booking details if 'id' is provided
+// Lấy chi tiết đơn đặt sân nếu 'id' được cung cấp
 if (isset($_GET["id"])) {
-    $maDonDatSan = intval($_GET["id"]); // Sanitize input
+    $maDonDatSan = intval($_GET["id"]); // Làm sạch dữ liệu đầu vào
     $donDatSan = mysqli_fetch_assoc($controller->GetDonDatSanById($maDonDatSan));
 }
 
-// Handle form submission
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["btnSave"])) {
+// Xử lý khi submit form
+if (isset($_POST["btnSave"])) {
     $maDonDatSan = intval($_POST["maDonDatSan"]);
     $maSanBong = intval($_POST['maSan']);
     $maKhachHang = intval($_POST['maKhach']);
@@ -21,9 +20,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["btnSave"])) {
     $gioBatDau = htmlspecialchars($_POST["gioBatDau"]);
     $gioKetThuc = htmlspecialchars($_POST["gioKetThuc"]);
     $trangThai = htmlspecialchars($_POST["trangThai"]);
-    $tongTien = str_replace(" VNĐ", "", str_replace(",", "", $_POST["tongTien"]));
-    $tongTien = floatval($tongTien);
+    $tongTien = floatval(str_replace(['.', ' VNĐ'], '', $_POST["tongTien"])); // Loại bỏ định dạng trước khi chuyển đổi
+    $tongTien = floatval($_POST["tongTienThuc"]); // Giá trị thực tế từ trường ẩn
 
+    $tenKhachHang = htmlspecialchars($_POST['tenKH']);
+
+    // Kiểm tra thời gian trùng
     $kiemtratrung = $controller->getKiemTraTrungGio($ngayNhanSan);
     $isTrung = false;
 
@@ -33,33 +35,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["btnSave"])) {
             $thoiGianKetThucDaDat = strtotime($r['ThoiGianKetThuc']);
             $trangThaiS = $r['TrangThai'];
             $maSanBong1 = $r['MaSanBong'];
-        //     echo $thoiGianBatDauDaDat;
-        //     echo strtotime($gioBatDau);
-        // //    echo $thoiGianKetThucDaDat;
-        //     exit();
 
-            // Kiểm tra nếu mã sân trùng và trạng thái là "Đã đặt"
             if (
-                $maSanBong == $maSanBong1 && 
-                $trangThaiS === "Đã đặt" && 
-                strtotime($gioBatDau) < $thoiGianKetThucDaDat && // Kiểm tra nếu giờ bắt đầu trùng giờ kết thúc của sân đã đặt
-                strtotime($gioKetThuc) > $thoiGianBatDauDaDat  // Kiểm tra nếu giờ kết thúc trùng giờ bắt đầu của sân đã đặt
+                $maSanBong == $maSanBong1 &&
+                $trangThaiS === "Đã đặt" &&
+                strtotime($gioBatDau) < $thoiGianKetThucDaDat &&
+                strtotime($gioKetThuc) > $thoiGianBatDauDaDat
             ) {
-                
                 $isTrung = true;
-                break; // Thoát vòng lặp khi phát hiện trùng
+                break;
             }
         }
 
         if ($isTrung) {
-            echo "<script>alert('Đã có người đặt vào khoảng thời gian này , vui lòng chọn thời gian khác!'); window.history.back();</script>";
-            
+            echo "<script>alert('Đã có người đặt vào khoảng thời gian này, vui lòng chọn thời gian khác!'); window.history.back();</script>";
             exit();
         }
     }
 
-
-    // Validate and process working hours
+    // Kiểm tra thời gian trong khung giờ hoạt động
     $thoigian = mysqli_fetch_assoc($psan->Get1San($maSanBong));
     $thoiGianHoatDong = $thoigian['ThoiGianHoatDong'];
     $catThoiGianHoatDong = explode(" - ", $thoiGianHoatDong);
@@ -82,7 +76,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["btnSave"])) {
         exit();
     }
 
-    // Update booking
+    // Cập nhật đơn đặt sân
     $result = $controller->UpDonDatSan(
         $maDonDatSan,
         $maSanBong,
@@ -91,7 +85,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["btnSave"])) {
         $gioBatDau,
         $gioKetThuc,
         $tongTien,
-        htmlspecialchars($_POST['tenKH'])
+        $tenKhachHang
     );
 
     if ($result) {
@@ -99,7 +93,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["btnSave"])) {
                 alert('Sửa đơn đặt sân thành công!');
                 window.location.href = 'admin.php?dondat';
               </script>";
-              
     } else {
         echo "<script>
                 alert('Có lỗi xảy ra. Vui lòng thử lại.');
@@ -108,6 +101,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["btnSave"])) {
     }
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="vi">
@@ -130,20 +124,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["btnSave"])) {
         <label for="maSan">Mã sân:</label>
 <select id="maSan" name="maSan" required>
     <?php
+       
+           // echo "<option value='{$donDatSan['MaSanBong']}' data-loai='{$donDatSan['MaLoaiSan']}' selected>{$donDatSan['TenSanBong']}</option>";
+
         // Hiển thị sân đã được chọn trước đó (mặc định)
-        echo "<option value='{$donDatSan['MaSanBong']}' selected>{$donDatSan['TenSanBong']}</option>";
+        
         
         // Lấy danh sách sân bóng theo mã chủ sân
         $kqnv = $psan->getAllSanBongByMaChuSan($_SESSION['MaChuSan']);
 
-        if ($kqnv && mysqli_num_rows($kqnv) > 0) {
+        if ($kqnv ) {
             while ($row = mysqli_fetch_assoc($kqnv)) {
+                $selected = ($row['MaSanBong'] == $maSanBong) ? "selected" : "";
                 // Tránh hiển thị lại sân đã đặt trước đó
                 if ($row['MaSanBong'] != $donDatSan['MaSanBong']) {
                     echo "<option value='{$row['MaSanBong']}' data-loai='{$row['MaLoaiSan']}'>{$row['TenSanBong']}</option>";
                 }
             }
         }
+      
     ?>
 </select>
 
@@ -170,6 +169,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["btnSave"])) {
 
         <label for="tongTien">Tổng tiền:</label>
         <input type="text" id="tongTien" name="tongTien" value="<?= number_format($donDatSan['TongTien'], 0, ',', '.') ?> VNĐ" readonly>
+        <input type="hidden" id="tongTienThuc" name="tongTienThuc" value="<?= $donDatSan['TongTien'] ?>">
+
 
         <button type="submit" name="btnSave">Lưu</button>
         <a href="admin.php?dondat">Quay lại</a>
@@ -186,24 +187,24 @@ const bangGia = {
 // Hàm tính tổng tiền
 // Hàm tính tổng tiền
 function tinhTongTien() {
-    const gioBatDau = document.getElementById("gioBatDau").value;  // Lấy giờ bắt đầu
-    const gioKetThuc = document.getElementById("gioKetThuc").value;  // Lấy giờ kết thúc
-    const selectedOption = document.getElementById("maSan").selectedOptions[0];  // Lấy sân đã chọn
-    const maLoaiSan = selectedOption.getAttribute("data-loai");  // Lấy 'data-loai' của sân
+    const gioBatDau = document.getElementById("gioBatDau").value;
+    const gioKetThuc = document.getElementById("gioKetThuc").value;
+    const selectedOption = document.getElementById("maSan").selectedOptions[0];
+    const maLoaiSan = selectedOption.getAttribute("data-loai");
 
     if (gioBatDau && gioKetThuc && maLoaiSan) {
-        const giaSan = bangGia[maLoaiSan];  // Lấy giá từ bảng giá dựa vào loại sân
+        const giaSan = bangGia[maLoaiSan];
         const thoiGianBatDau = new Date(`2000-01-01T${gioBatDau}`);
         const thoiGianKetThuc = new Date(`2000-01-01T${gioKetThuc}`);
 
         if (thoiGianBatDau >= thoiGianKetThuc) {
             alert("Giờ bắt đầu phải sớm hơn giờ kết thúc!");
             document.getElementById("tongTien").value = "0 VNĐ";
+            document.getElementById("tongTienThuc").value = 0;
             return;
         }
 
         let tongTien = 0;
-        // Tính toán tiền
         while (thoiGianBatDau < thoiGianKetThuc) {
             const gio = thoiGianBatDau.getHours();
 
@@ -214,6 +215,7 @@ function tinhTongTien() {
             } else {
                 alert("Thời gian đặt sân phải nằm trong khoảng 6:00 - 23:00!");
                 document.getElementById("tongTien").value = "0 VNĐ";
+                document.getElementById("tongTienThuc").value = 0;
                 return;
             }
 
@@ -221,22 +223,30 @@ function tinhTongTien() {
         }
 
         document.getElementById("tongTien").value = Math.round(tongTien).toLocaleString() + " VNĐ";
+        document.getElementById("tongTienThuc").value = Math.round(tongTien);
     } else {
         document.getElementById("tongTien").value = "0 VNĐ";
+        document.getElementById("tongTienThuc").value = 0;
     }
 }
+
+
 
 document.getElementById("maSan").addEventListener("change", tinhTongTien);
 document.getElementById("gioBatDau").addEventListener("input", tinhTongTien);
 document.getElementById("gioKetThuc").addEventListener("input", tinhTongTien);
 
-document.getElementById("maSan").addEventListener("change", function() {
+document.getElementById("maSan").addEventListener("change", function () {
     const selectedOption = this.options[this.selectedIndex];
     const maLoaiSan = selectedOption.getAttribute("data-loai");
-    // Lưu giá trị loại sân vào một trường hidden hoặc xử lý tương tự
-    console.log("Mã loại sân: ", maLoaiSan);
     tinhTongTien();
 });
+
+// Giữ giá trị mặc định nếu không thay đổi
+window.addEventListener("load", function () {
+    tinhTongTien(); // Tính lại tổng tiền theo giá trị mặc định
+});
+
 
     </script>
 </body>

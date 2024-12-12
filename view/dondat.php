@@ -80,7 +80,8 @@ if (isset($_POST["delete"])) {
     $kq = $p->updateTrangThaiDatSan($maDonDatSan, $trangThai); // Gọi hàm cập nhật trạng thái
     if ($kq) {
         echo "<script>alert('Đơn đặt sân đã được chuyển sang trạng thái Đã hủy!');</script>";
-        header("Location: ?dondat");
+        echo "<script>window.location.href = 'admin.php?dondat';</script>";
+
         exit();
     } else {
         echo "<script>alert('Không thể cập nhật trạng thái đơn đặt sân. Vui lòng thử lại!');</script>";

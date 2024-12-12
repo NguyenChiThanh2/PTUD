@@ -293,12 +293,16 @@ if (isset($_POST['btnCapNhatSan'])) {
     $maNhanVien = $_POST['MaNhanVien'];
     $maCoSo = $_POST['MaCoSo'];
    
-    $ktraten  = $psb->getAllSanBongByTenSanBong($tenSanBong,$maCoSo);
-    if ($ktraten === 1) {
-        echo "<script>alert('Tên sân đã tồn tại trong cơ sơ này!');</script>";
-        echo '<script>window.history.back();</script>';
-        exit();  // Dừng lại ngay sau khi tên sân đã tồn tại
+    // Chỉ kiểm tra tên sân nếu tên sân hoặc cơ sở thay đổi
+    if ($tenSanBong !== $sanBongData['TenSanBong'] || $maCoSo !== $sanBongData['MaCoSo']) {
+        $ktraten  = $psb->getAllSanBongByTenSanBong($tenSanBong, $maCoSo);
+        if ($ktraten === 1) {
+            echo "<script>alert('Tên sân đã tồn tại trong cơ sở này!');</script>";
+            echo '<script>window.history.back();</script>';
+            exit();  
+        }
     }
+
     
     // Xử lý ảnh
     $newFileName = null;
