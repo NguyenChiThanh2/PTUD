@@ -97,7 +97,7 @@ article p {
 <body>
     <header id="header">
         <div class="logo">
-        <img src="img/logo.jpg" alt="Sport Logo" width="100px">
+        <img src="img/logo.png" alt="Sport Logo" width="100px">
         </div>
         <nav id="menu">
             <ul>
