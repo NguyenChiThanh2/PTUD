@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.0
+-- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th12 09, 2024 lúc 05:39 PM
--- Phiên bản máy phục vụ: 10.4.24-MariaDB
--- Phiên bản PHP: 8.1.6
+-- Thời gian đã tạo: Th12 11, 2024 lúc 12:23 PM
+-- Phiên bản máy phục vụ: 10.4.32-MariaDB
+-- Phiên bản PHP: 8.0.30
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -36,7 +36,7 @@ CREATE TABLE `chitietdondatsan` (
   `MaSanBong` int(11) DEFAULT NULL,
   `DonGia` int(11) DEFAULT NULL,
   `ThoiLuong` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -52,7 +52,7 @@ CREATE TABLE `chusan` (
   `SDT` varchar(255) NOT NULL,
   `DiaChi` varchar(255) DEFAULT NULL,
   `GioiTinh` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `chusan`
@@ -61,7 +61,7 @@ CREATE TABLE `chusan` (
 INSERT INTO `chusan` (`MaChuSan`, `TenChuSan`, `Email`, `MatKhau`, `SDT`, `DiaChi`, `GioiTinh`) VALUES
 (1, 'Nguyễn Văn Trung', 'nguyenvantrung@gmail.com', 'e10adc3949ba59abbe56e057f20f883e', '0779056430', '123 Phạm Văn Đồng', 1),
 (2, 'Trần Thị Bảo Châu', 'tranthibaochau@gmail.com', 'e10adc3949ba59abbe56e057f20f883e', '0325379177', '456 Bạch Đằng', 0),
-(3, 'Lê Văn Việt Đức', 'levanvietduc@example.com', 'e10adc3949ba59abbe56e057f20f883e', '0969456328', '789 Lê Lợi', 1),
+(3, 'Lê Văn Việt Đức', 'levanvietduc@gmail.com', 'e10adc3949ba59abbe56e057f20f883e', '0969456328', '789 Lê Lợi', 1),
 (4, 'Đào Đặng Thùy Vy', 'daodangthuyvy@gmail.com', '827ccb0eea8a706c4c34a16891f84e7b', '0792708732', '530 Lâm Văn Bền', 0),
 (5, 'Phạm Thanh Nguyên', 'phamthanhnguyen@gmail.com', 'e10adc3949ba59abbe56e057f20f883e', '0792441286', '23 Tô Vĩnh Diệm', 1);
 
@@ -77,7 +77,7 @@ CREATE TABLE `coso` (
   `DiaChi` varchar(255) NOT NULL,
   `MoTa` varchar(255) DEFAULT NULL,
   `MaChuSan` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `coso`
@@ -93,7 +93,11 @@ INSERT INTO `coso` (`MaCoSo`, `TenCoSo`, `DiaChi`, `MoTa`, `MaChuSan`) VALUES
 (7, 'Sân bóng Bình Dương', 'Đường Cách Mạng Tháng 8, Phú Cường, Thủ Dầu Một, Bình Dương', 'Sân bóng được trang bị đèn chiếu sáng và khu vực ngồi xem rộng rãi', 1),
 (8, 'Sân bóng Tân Hiệp', 'Tân Hiệp, Tân Uyên, Bình Dương', 'sân bóng có chất lượng tốt, được các đội bóng phong trào lựa chọn tập luyện', 2),
 (9, 'Sân bóng Vinh', '1 Trường Thi, TP Vinh, Nghệ An', 'Cơ sở phục vụ các giải đấu từ bình dân đến chuyên nghiệp tại khu vực Miền Trung', 4),
-(10, 'Sân bóng Rạch Giá', '27 Nguyễn Trung Trực, Rạch Giá, Kiên Giang', 'Sân bóng nằm giữa khu vực trung tâm, thuận tiện cho các đội bóng địa phương vui chơi và tập luyện', 4);
+(10, 'Sân bóng Rạch Giá', '27 Nguyễn Trung Trực, Rạch Giá, Kiên Giang', 'Sân bóng nằm giữa khu vực trung tâm, thuận tiện cho các đội bóng địa phương vui chơi và tập luyện', 4),
+(11, 'Sân bóng đá Hiệp Phú 4', '135/2 Đình Phong Phú, Phường Trường Thọ, Quận Thủ Đức, TP. Hồ Chí Minh', 'Sân bóng đá Hiệp Phú 4 là một trong những sân bóng chất lượng cao tại khu vực Quận Thủ Đức, TP. Hồ Chí Minh. ', 3),
+(12, 'Sân bóng đá X7', 'Đường số 2, Phường Hòa Khánh Bắc, Quận Liên Chiểu, TP. Đà Nẵng', 'Sân bóng đá X7 tọa lạc tại khu vực Phường Hòa Khánh Bắc, Quận Liên Chiểu, Đà Nẵng, là một trong những sân bóng lý tưởng cho các trận đấu giao hữu và các hoạt động thể thao ngoài trời.', 2),
+(13, 'Sân bóng đá D7 SP', '7B Tân Phú, Phường Phú Mỹ, Quận 7, TP. Hồ Chí Minh', 'Sân bóng D7 SP còn có hệ thống chiếu sáng mạnh mẽ, phù hợp cho các trận đấu vào buổi tối.', 4),
+(14, 'Sân bóng đá Bế Văn Cấm', '27 Bế Văn Cấm, Phường Tân Kiểng, Quận 7, TP. Hồ Chí Minh', 'Sân bóng đá Bế Văn Cấm là một sân bóng chất lượng nằm tại Quận 7, TP. Hồ Chí Minh, nổi bật với cơ sở vật chất hiện đại và sự thuận tiện về vị trí.', 5);
 
 -- --------------------------------------------------------
 
@@ -111,14 +115,7 @@ CREATE TABLE `dondatsan1` (
   `GioKetThuc` time NOT NULL,
   `TongTien` decimal(10,0) DEFAULT NULL,
   `TrangThai` varchar(50) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Đang đổ dữ liệu cho bảng `dondatsan1`
---
-
-INSERT INTO `dondatsan1` (`MaDonDatSan`, `MaKhachHang`, `TenKhachHang`, `MaSanBong`, `NgayDat`, `GioBatDau`, `GioKetThuc`, `TongTien`, `TrangThai`) VALUES
-(53, 13, 'Nguyễn Chí Thanh', 3, '2024-12-11', '18:24:00', '21:24:00', '360000', 'Chờ duyệt');
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -132,7 +129,7 @@ CREATE TABLE `giathue` (
   `ThoiGianKetThuc` time DEFAULT NULL,
   `Gia` int(11) DEFAULT NULL,
   `MaLoaiSanBong` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `giathue`
@@ -160,7 +157,7 @@ CREATE TABLE `khachhang` (
   `MatKhau` varchar(255) NOT NULL,
   `DiaChi` varchar(255) DEFAULT NULL,
   `GioiTinh` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `khachhang`
@@ -175,8 +172,7 @@ INSERT INTO `khachhang` (`MaKhachHang`, `TenKhachHang`, `Email`, `SDT`, `MatKhau
 (6, 'Vũ Thanh Hà', 'thanhha.vu@gmail.com', '0932765890', 'e10adc3949ba59abbe56e057f20f883e', '42 Hoàng Hoa Thám, Quận Thanh Khê, Đà Nẵng', 1),
 (7, 'Nguyễn Xuân Bách', 'bachxuan.nguyen@gmail.com', '0908654359', 'e10adc3949ba59abbe56e057f20f883e', '10 Lê Văn Sỹ, Quận Phú Nhuận, TP. Hồ Chí Minh', 1),
 (8, 'Trương Thị Mai', 'truongthimai1980@gmail.com', '0987654235', 'e10adc3949ba59abbe56e057f20f883e', '20 Trần Phú, Quận Ba Đình, Hà Nội', 0),
-(9, 'Kh Giả', 'luongthat2003@gmail.com', '0971245678', 'c56d0e9a7ccec67b4ea131655038d604', '89 Võ Thị Sáu, Quận 3, TP.Hồ Chí Minh', 1),
-(13, 'Nguyễn Chí Thanh', 'NCT@gmail.com', '0328362054', 'e10adc3949ba59abbe56e057f20f883e', '60/18 HKA', 1);
+(9, 'Kh Giả', 'luongthat2003@gmail.com', '0971245678', 'c56d0e9a7ccec67b4ea131655038d604', '89 Võ Thị Sáu, Quận 3, TP.Hồ Chí Minh', 1);
 
 -- --------------------------------------------------------
 
@@ -188,7 +184,7 @@ CREATE TABLE `loaisan` (
   `MaLoaiSan` int(11) NOT NULL,
   `TenLoai` varchar(255) NOT NULL,
   `MoTa` varchar(255) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `loaisan`
@@ -214,7 +210,7 @@ CREATE TABLE `nhanvien` (
   `GioiTinh` int(11) DEFAULT NULL,
   `MatKhau` varchar(255) NOT NULL,
   `MaChuSan` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `nhanvien`
@@ -237,14 +233,14 @@ CREATE TABLE `quantrihethong` (
   `MaQuanTri` int(11) NOT NULL,
   `TenQuanTri` varchar(255) NOT NULL,
   `Email` varchar(255) NOT NULL,
-  `matKhau` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `MatKhau` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `quantrihethong`
 --
 
-INSERT INTO `quantrihethong` (`MaQuanTri`, `TenQuanTri`, `Email`, `matKhau`) VALUES
+INSERT INTO `quantrihethong` (`MaQuanTri`, `TenQuanTri`, `Email`, `MatKhau`) VALUES
 (1, 'Admin', 'admin@gmail.com', 'e10adc3949ba59abbe56e057f20f883e');
 
 -- --------------------------------------------------------
@@ -262,7 +258,7 @@ CREATE TABLE `sanbong` (
   `MaNhanVien` int(11) DEFAULT NULL,
   `MaLoaiSan` int(11) DEFAULT NULL,
   `MaCoSo` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `sanbong`
@@ -286,7 +282,19 @@ INSERT INTO `sanbong` (`MaSanBong`, `TenSanBong`, `ThoiGianHoatDong`, `MoTa`, `H
 (15, 'Mỹ Định 03', '6:00 - 21:00', 'Sân chuyên dụng cho trẻ em và thiếu niên', 'my-dinh-03.jpg', 5, 3, 5),
 (16, 'Bình Phước 01', '7:00 - 23:00', 'Sân cỏ tự nhiên, có khu vực cho tác giả', 'binh-phuoc-01.jpg', 3, 1, 6),
 (17, 'Bình Phước 02', '7:00 - 23:00', 'Sân cỏ tự nhiên, có khu vực cho tác giả', 'binh-phuoc-02.jpg', 3, 2, 6),
-(18, 'Bình Phước 03', '7:00 - 23:00', 'Sân cỏ tự nhiên, có khu vực cho tác giả', 'binh-phuoc-03.jpg', 3, 3, 6);
+(18, 'Bình Phước 03', '7:00 - 23:00', 'Sân cỏ tự nhiên, có khu vực cho tác giả', 'binh-phuoc-03.jpg', 3, 3, 6),
+(19, 'Hiệp Phú 01', '6:00 - 22:00', 'Sân được trang bị cỏ nhân tạo cao cấp, mang đến trải nghiệm chơi bóng êm ái và an toàn cho người chơi.', 'phu-hiep-01.jpg', 1, 1, 11),
+(20, 'Hiệp Phú 02', '5:30 - 22:30', 'Sân có diện tích rộng rãi, hệ thống chiếu sáng hiện đại, phù hợp cho các hoạt động chơi bóng vào ban ngày hoặc buổi tối.', 'phu_hiep-02.jpg', 2, 2, 11),
+(21, 'Hiệp Phú 03', '5:00 - 22:00', 'Với trang thiết bị đầy đủ, sân bóng Hiệp Phú 4 là sự lựa chọn lý tưởng cho những ai yêu thích thể thao và muốn tổ chức các buổi tập luyện, giao lưu thể thao.', 'phu-hiep-03.jpg', 4, 3, 11),
+(22, 'X7 01', '6:00 - 23:00', 'Sân được trang bị cỏ nhân tạo chất lượng cao, mang đến cảm giác chơi bóng thoải mái, an toàn cho người tham gia. ', 'X7-01.jpg', 3, 1, 12),
+(23, 'X7 02', '5:30 - 22:30', 'Kích thước sân phù hợp với các trận đấu 7 người, thích hợp cho các câu lạc bộ, nhóm bạn hoặc công ty tổ chức các giải đấu mini.', 'X7-02.jpg', 5, 2, 12),
+(24, 'X7 03', '6:00 - 23:00', 'Sân bóng X7 có hệ thống chiếu sáng hiện đại, đảm bảo hoạt động suốt cả ngày lẫn đêm. Không gian sân rộng rãi, thoáng đãng, thích hợp cho các hoạt động thể thao và sự kiện ngoài trời. ', 'X7-03.jpg', 1, 3, 12),
+(25, 'D7 SP 01', '5:00 - 22:00', 'Sân bóng D7 SP còn có hệ thống chiếu sáng mạnh mẽ, phù hợp cho các trận đấu vào buổi tối.', 'D7-SP-01.jpg', 2, 1, 13),
+(26, 'D7 SP 02', '5:00 - 23:00', 'Không gian sân rộng rãi, thoáng đãng, với các khu vực nghỉ ngơi và thay đồ tiện lợi cho người chơi.', 'D7-SP-02.jpg', 3, 2, 13),
+(27, 'D7-SP 03', '6:00 - 23:00', 'Đây là điểm đến lý tưởng cho những nhóm bạn, đội bóng hay các tổ chức muốn tổ chức các hoạt động thể thao, giải đấu, hoặc chỉ đơn giản là buổi giao lưu thể thao.', 'D7-SP-03.jpg', 4, 3, 13),
+(28, 'Bế Văn Cấm 01', '6:30 - 23:30', 'Sân được trang bị cỏ nhân tạo chất lượng cao, mang lại cảm giác thoải mái và an toàn cho người chơi.', 'be-van-cam-01.jpg', 1, 1, 14),
+(29, 'Bế Văn Cấm 02', '5:00 - 22:00', 'Sân bóng Bế Văn Cấm là lựa chọn tuyệt vời cho các nhóm bạn, câu lạc bộ hoặc công ty muốn tổ chức giải đấu, sự kiện thể thao hay đơn giản là một buổi luyện tập, giao lưu. ', 'be-van-cam-02.jpg', 2, 2, 14),
+(30, 'Bế Văn Cấm 03', '5:30 - 23:00', 'Sân có hệ thống chiếu sáng hiện đại, phù hợp cho các trận đấu vào buổi tối, đảm bảo ánh sáng đầy đủ cho mọi hoạt động thể thao.', 'be-van-cam-03.jpg', 3, 3, 14);
 
 --
 -- Chỉ mục cho các bảng đã đổ
@@ -370,7 +378,7 @@ ALTER TABLE `sanbong`
 -- AUTO_INCREMENT cho bảng `chitietdondatsan`
 --
 ALTER TABLE `chitietdondatsan`
-  MODIFY `MaChiTietDonDatSan` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `MaChiTietDonDatSan` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
 -- AUTO_INCREMENT cho bảng `chusan`
@@ -382,13 +390,13 @@ ALTER TABLE `chusan`
 -- AUTO_INCREMENT cho bảng `coso`
 --
 ALTER TABLE `coso`
-  MODIFY `MaCoSo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `MaCoSo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT cho bảng `dondatsan1`
 --
 ALTER TABLE `dondatsan1`
-  MODIFY `MaDonDatSan` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=54;
+  MODIFY `MaDonDatSan` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=74;
 
 --
 -- AUTO_INCREMENT cho bảng `giathue`
@@ -400,7 +408,7 @@ ALTER TABLE `giathue`
 -- AUTO_INCREMENT cho bảng `khachhang`
 --
 ALTER TABLE `khachhang`
-  MODIFY `MaKhachHang` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `MaKhachHang` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT cho bảng `loaisan`
@@ -424,7 +432,7 @@ ALTER TABLE `quantrihethong`
 -- AUTO_INCREMENT cho bảng `sanbong`
 --
 ALTER TABLE `sanbong`
-  MODIFY `MaSanBong` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `MaSanBong` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
 
 --
 -- Các ràng buộc cho các bảng đã đổ
